@@ -1,0 +1,7 @@
+gymnasium[mujoco]>=1.2,<2
+stable-baselines3>=2.7,<3
+matplotlib
+pandas
+tensorboard
+pillow
+
