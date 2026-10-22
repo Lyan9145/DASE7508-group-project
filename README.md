@@ -1,5 +1,5 @@
 # DASE7508-group-project
-Group 18: joint-angle sensor spoofing and kinematic mitigation for a simulated
+Group 9: joint-angle sensor spoofing and kinematic mitigation for a simulated
 reinforcement-learning robotic arm.
 
 - [2026-10-22 results and group progress](RESULTS.md): three validated policies,
