@@ -1,0 +1,8 @@
+__pycache__/
+*.py[cod]
+.venv/
+.uv-cache/
+.pytest_cache/
+github_upload/outputs/*/tensorboard/
+github_upload/outputs/*/train.monitor.csv
+*.log
