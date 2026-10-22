@@ -1,0 +1,32 @@
+[
+  {
+    "policy": "sac_seed_3_sync",
+    "case": "random_bias_e0.1_d20",
+    "monitor_on": true,
+    "seed": 802009,
+    "abort": true,
+    "abort_step": 40,
+    "alarm_streak": 21,
+    "streak_start": 20,
+    "injected_delta_at_abort_rad": 0.0,
+    "true_distance_at_abort_m": 0.003848998620906885,
+    "alarm_steps_without_injection_in_streak": [
+      40
+    ]
+  },
+  {
+    "policy": "sac_seed_3_sync",
+    "case": "bias_e0.1_d20",
+    "monitor_on": true,
+    "seed": 802009,
+    "abort": true,
+    "abort_step": 40,
+    "alarm_streak": 21,
+    "streak_start": 20,
+    "injected_delta_at_abort_rad": 0.0,
+    "true_distance_at_abort_m": 0.003848998620906885,
+    "alarm_steps_without_injection_in_streak": [
+      40
+    ]
+  }
+]

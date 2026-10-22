@@ -1,0 +1,166 @@
+{
+  "steps": 150000,
+  "seed": 1,
+  "device": "cpu",
+  "actual_timesteps": 150000,
+  "synchronized": true,
+  "wall_clock_cap_seconds": 1600.0,
+  "stopped_at_time_cap": false,
+  "model_sha256": "7f2b85e22601fd847793710991d245f8b6975ef935fa5a2e0592ca83f219bc24",
+  "training_seconds": 1143.7208302069994,
+  "steps_per_second": 131.15088580912865,
+  "validation_successes": 30,
+  "validation_episodes": 30,
+  "trials": [
+    {
+      "seed": 11000,
+      "final_10_mean_distance": 0.0016069939140216632,
+      "success": true
+    },
+    {
+      "seed": 11001,
+      "final_10_mean_distance": 0.0023824527310778326,
+      "success": true
+    },
+    {
+      "seed": 11002,
+      "final_10_mean_distance": 0.004151518506400587,
+      "success": true
+    },
+    {
+      "seed": 11003,
+      "final_10_mean_distance": 0.004872955066982739,
+      "success": true
+    },
+    {
+      "seed": 11004,
+      "final_10_mean_distance": 0.0009304238440353219,
+      "success": true
+    },
+    {
+      "seed": 11005,
+      "final_10_mean_distance": 0.0032841566030760256,
+      "success": true
+    },
+    {
+      "seed": 11006,
+      "final_10_mean_distance": 0.007246602632414371,
+      "success": true
+    },
+    {
+      "seed": 11007,
+      "final_10_mean_distance": 0.004971936333143385,
+      "success": true
+    },
+    {
+      "seed": 11008,
+      "final_10_mean_distance": 0.0065283421980141115,
+      "success": true
+    },
+    {
+      "seed": 11009,
+      "final_10_mean_distance": 0.007038337425557194,
+      "success": true
+    },
+    {
+      "seed": 11010,
+      "final_10_mean_distance": 0.0039526424250676505,
+      "success": true
+    },
+    {
+      "seed": 11011,
+      "final_10_mean_distance": 0.004316990437643474,
+      "success": true
+    },
+    {
+      "seed": 11012,
+      "final_10_mean_distance": 0.0022253195603703273,
+      "success": true
+    },
+    {
+      "seed": 11013,
+      "final_10_mean_distance": 0.0017634732236864736,
+      "success": true
+    },
+    {
+      "seed": 11014,
+      "final_10_mean_distance": 0.007968038327893773,
+      "success": true
+    },
+    {
+      "seed": 11015,
+      "final_10_mean_distance": 0.007104829218027799,
+      "success": true
+    },
+    {
+      "seed": 11016,
+      "final_10_mean_distance": 0.012666176946052815,
+      "success": true
+    },
+    {
+      "seed": 11017,
+      "final_10_mean_distance": 0.0057590639988232654,
+      "success": true
+    },
+    {
+      "seed": 11018,
+      "final_10_mean_distance": 0.00443337635448751,
+      "success": true
+    },
+    {
+      "seed": 11019,
+      "final_10_mean_distance": 0.015357480783335934,
+      "success": true
+    },
+    {
+      "seed": 11020,
+      "final_10_mean_distance": 0.01074738153340701,
+      "success": true
+    },
+    {
+      "seed": 11021,
+      "final_10_mean_distance": 0.0029037685954760814,
+      "success": true
+    },
+    {
+      "seed": 11022,
+      "final_10_mean_distance": 0.0027215996655428802,
+      "success": true
+    },
+    {
+      "seed": 11023,
+      "final_10_mean_distance": 0.004675633028754352,
+      "success": true
+    },
+    {
+      "seed": 11024,
+      "final_10_mean_distance": 0.005620672482893892,
+      "success": true
+    },
+    {
+      "seed": 11025,
+      "final_10_mean_distance": 0.0005486106844588493,
+      "success": true
+    },
+    {
+      "seed": 11026,
+      "final_10_mean_distance": 0.002945621747230183,
+      "success": true
+    },
+    {
+      "seed": 11027,
+      "final_10_mean_distance": 0.008020592274584945,
+      "success": true
+    },
+    {
+      "seed": 11028,
+      "final_10_mean_distance": 0.006683561538440118,
+      "success": true
+    },
+    {
+      "seed": 11029,
+      "final_10_mean_distance": 0.007143572465333288,
+      "success": true
+    }
+  ]
+}

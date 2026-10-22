@@ -1,0 +1,320 @@
+{
+  "model_sha256": "5e1c824ef6bf6dfa006927f3e393cdb79e9b6472824732a84c48d3df09c43165",
+  "modes": {
+    "legacy": {
+      "successes": 30,
+      "mean_final_error_m": 0.0066754524881111905,
+      "max_final_error_m": 0.021476958613947786,
+      "trials": [
+        {
+          "seed": 11000,
+          "current_final_10_mean_m": 0.0041779996155229746,
+          "cached_final_10_mean_m": 0.004178004924871193
+        },
+        {
+          "seed": 11001,
+          "current_final_10_mean_m": 0.004071968611407859,
+          "cached_final_10_mean_m": 0.004071968395705247
+        },
+        {
+          "seed": 11002,
+          "current_final_10_mean_m": 0.004685424578524502,
+          "cached_final_10_mean_m": 0.00468542539985981
+        },
+        {
+          "seed": 11003,
+          "current_final_10_mean_m": 0.0011577193652701863,
+          "cached_final_10_mean_m": 0.0011577247814144834
+        },
+        {
+          "seed": 11004,
+          "current_final_10_mean_m": 0.008010957713391692,
+          "cached_final_10_mean_m": 0.008010957637282932
+        },
+        {
+          "seed": 11005,
+          "current_final_10_mean_m": 0.018606086205144166,
+          "cached_final_10_mean_m": 0.018606087073492875
+        },
+        {
+          "seed": 11006,
+          "current_final_10_mean_m": 0.009489530462315997,
+          "cached_final_10_mean_m": 0.009489527490451621
+        },
+        {
+          "seed": 11007,
+          "current_final_10_mean_m": 0.00813647383654256,
+          "cached_final_10_mean_m": 0.008136473309494529
+        },
+        {
+          "seed": 11008,
+          "current_final_10_mean_m": 0.0044738325580830594,
+          "cached_final_10_mean_m": 0.004473833678477642
+        },
+        {
+          "seed": 11009,
+          "current_final_10_mean_m": 0.005537469675503763,
+          "cached_final_10_mean_m": 0.005537468278492126
+        },
+        {
+          "seed": 11010,
+          "current_final_10_mean_m": 0.021476958613947786,
+          "cached_final_10_mean_m": 0.021476962444691588
+        },
+        {
+          "seed": 11011,
+          "current_final_10_mean_m": 0.00911583802638356,
+          "cached_final_10_mean_m": 0.009115836413160359
+        },
+        {
+          "seed": 11012,
+          "current_final_10_mean_m": 0.0022616804107423592,
+          "cached_final_10_mean_m": 0.0022616778319544673
+        },
+        {
+          "seed": 11013,
+          "current_final_10_mean_m": 0.0054110035686120266,
+          "cached_final_10_mean_m": 0.005411001620123369
+        },
+        {
+          "seed": 11014,
+          "current_final_10_mean_m": 0.006658298313100502,
+          "cached_final_10_mean_m": 0.00665829637261992
+        },
+        {
+          "seed": 11015,
+          "current_final_10_mean_m": 0.004409996263198799,
+          "cached_final_10_mean_m": 0.0044099901838542364
+        },
+        {
+          "seed": 11016,
+          "current_final_10_mean_m": 0.005802622222357396,
+          "cached_final_10_mean_m": 0.005802624428625216
+        },
+        {
+          "seed": 11017,
+          "current_final_10_mean_m": 0.00747355599595762,
+          "cached_final_10_mean_m": 0.007473559745648976
+        },
+        {
+          "seed": 11018,
+          "current_final_10_mean_m": 0.005838698207518025,
+          "cached_final_10_mean_m": 0.005838701367167549
+        },
+        {
+          "seed": 11019,
+          "current_final_10_mean_m": 0.0027970290198732774,
+          "cached_final_10_mean_m": 0.0027970345205686727
+        },
+        {
+          "seed": 11020,
+          "current_final_10_mean_m": 0.004205430608903752,
+          "cached_final_10_mean_m": 0.004205430821290629
+        },
+        {
+          "seed": 11021,
+          "current_final_10_mean_m": 0.002031541178372754,
+          "cached_final_10_mean_m": 0.0020315474156966853
+        },
+        {
+          "seed": 11022,
+          "current_final_10_mean_m": 0.0033147305358338284,
+          "cached_final_10_mean_m": 0.0033147303010073598
+        },
+        {
+          "seed": 11023,
+          "current_final_10_mean_m": 0.002806000394362992,
+          "cached_final_10_mean_m": 0.0028060005835516544
+        },
+        {
+          "seed": 11024,
+          "current_final_10_mean_m": 0.010803830401903945,
+          "cached_final_10_mean_m": 0.010803830327046866
+        },
+        {
+          "seed": 11025,
+          "current_final_10_mean_m": 0.008312894501251855,
+          "cached_final_10_mean_m": 0.008312896344831526
+        },
+        {
+          "seed": 11026,
+          "current_final_10_mean_m": 0.005292764687288147,
+          "cached_final_10_mean_m": 0.005292763915248451
+        },
+        {
+          "seed": 11027,
+          "current_final_10_mean_m": 0.0012642274593549611,
+          "cached_final_10_mean_m": 0.0012642277138247117
+        },
+        {
+          "seed": 11028,
+          "current_final_10_mean_m": 0.01198579593912448,
+          "cached_final_10_mean_m": 0.011985796008655533
+        },
+        {
+          "seed": 11029,
+          "current_final_10_mean_m": 0.010653215673540894,
+          "cached_final_10_mean_m": 0.010653215976626749
+        }
+      ]
+    },
+    "synchronized": {
+      "successes": 30,
+      "mean_final_error_m": 0.006675451640970635,
+      "max_final_error_m": 0.021476951547631504,
+      "trials": [
+        {
+          "seed": 11000,
+          "current_final_10_mean_m": 0.004177997788268905,
+          "cached_final_10_mean_m": 0.004178003097592186
+        },
+        {
+          "seed": 11001,
+          "current_final_10_mean_m": 0.004071967509212957,
+          "cached_final_10_mean_m": 0.004071967293495602
+        },
+        {
+          "seed": 11002,
+          "current_final_10_mean_m": 0.004685423155258952,
+          "cached_final_10_mean_m": 0.0046854239765856545
+        },
+        {
+          "seed": 11003,
+          "current_final_10_mean_m": 0.0011577184650506302,
+          "cached_final_10_mean_m": 0.0011577238811257818
+        },
+        {
+          "seed": 11004,
+          "current_final_10_mean_m": 0.008010955588310355,
+          "cached_final_10_mean_m": 0.008010955512196476
+        },
+        {
+          "seed": 11005,
+          "current_final_10_mean_m": 0.018606086960245287,
+          "cached_final_10_mean_m": 0.018606087828593354
+        },
+        {
+          "seed": 11006,
+          "current_final_10_mean_m": 0.009489534531032809,
+          "cached_final_10_mean_m": 0.009489531559194436
+        },
+        {
+          "seed": 11007,
+          "current_final_10_mean_m": 0.008136473653650845,
+          "cached_final_10_mean_m": 0.008136473126608054
+        },
+        {
+          "seed": 11008,
+          "current_final_10_mean_m": 0.00447383499310522,
+          "cached_final_10_mean_m": 0.004473836113512704
+        },
+        {
+          "seed": 11009,
+          "current_final_10_mean_m": 0.005537470187404424,
+          "cached_final_10_mean_m": 0.005537468790408576
+        },
+        {
+          "seed": 11010,
+          "current_final_10_mean_m": 0.021476951547631504,
+          "cached_final_10_mean_m": 0.021476955378364533
+        },
+        {
+          "seed": 11011,
+          "current_final_10_mean_m": 0.009115835816222842,
+          "cached_final_10_mean_m": 0.009115834202997376
+        },
+        {
+          "seed": 11012,
+          "current_final_10_mean_m": 0.0022616795423920123,
+          "cached_final_10_mean_m": 0.002261676963583526
+        },
+        {
+          "seed": 11013,
+          "current_final_10_mean_m": 0.005411000246348997,
+          "cached_final_10_mean_m": 0.005410998297894158
+        },
+        {
+          "seed": 11014,
+          "current_final_10_mean_m": 0.006658299048022377,
+          "cached_final_10_mean_m": 0.00665829710758095
+        },
+        {
+          "seed": 11015,
+          "current_final_10_mean_m": 0.00440999585499922,
+          "cached_final_10_mean_m": 0.004409989775704815
+        },
+        {
+          "seed": 11016,
+          "current_final_10_mean_m": 0.005802623963761144,
+          "cached_final_10_mean_m": 0.005802626170034948
+        },
+        {
+          "seed": 11017,
+          "current_final_10_mean_m": 0.0074735520684921205,
+          "cached_final_10_mean_m": 0.0074735558182185274
+        },
+        {
+          "seed": 11018,
+          "current_final_10_mean_m": 0.005838691436434883,
+          "cached_final_10_mean_m": 0.005838694596070253
+        },
+        {
+          "seed": 11019,
+          "current_final_10_mean_m": 0.0027970316434933256,
+          "cached_final_10_mean_m": 0.0027970371441698428
+        },
+        {
+          "seed": 11020,
+          "current_final_10_mean_m": 0.004205432859200911,
+          "cached_final_10_mean_m": 0.004205433071597773
+        },
+        {
+          "seed": 11021,
+          "current_final_10_mean_m": 0.002031537119799982,
+          "cached_final_10_mean_m": 0.0020315433570083337
+        },
+        {
+          "seed": 11022,
+          "current_final_10_mean_m": 0.003314730512152489,
+          "cached_final_10_mean_m": 0.00331473027730773
+        },
+        {
+          "seed": 11023,
+          "current_final_10_mean_m": 0.0028060031495503006,
+          "cached_final_10_mean_m": 0.0028060033387300306
+        },
+        {
+          "seed": 11024,
+          "current_final_10_mean_m": 0.01080382953593789,
+          "cached_final_10_mean_m": 0.01080382946107631
+        },
+        {
+          "seed": 11025,
+          "current_final_10_mean_m": 0.008312893436066964,
+          "cached_final_10_mean_m": 0.008312895279646192
+        },
+        {
+          "seed": 11026,
+          "current_final_10_mean_m": 0.005292765324424891,
+          "cached_final_10_mean_m": 0.005292764552362011
+        },
+        {
+          "seed": 11027,
+          "current_final_10_mean_m": 0.0012642282100671649,
+          "cached_final_10_mean_m": 0.0012642284645068788
+        },
+        {
+          "seed": 11028,
+          "current_final_10_mean_m": 0.011985794687996286,
+          "cached_final_10_mean_m": 0.011985794757519697
+        },
+        {
+          "seed": 11029,
+          "current_final_10_mean_m": 0.010653210394583367,
+          "cached_final_10_mean_m": 0.010653210697698682
+        }
+      ]
+    }
+  },
+  "legacy_max_difference_vs_uploaded_m": 5.939602829539703e-09
+}

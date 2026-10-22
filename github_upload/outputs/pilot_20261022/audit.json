@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "episodes": 300,
+  "trace_rows": 30000,
+  "paired_initial_states": 6,
+  "noise_observation_keys": 600,
+  "checks": [
+    "snapshot hashes",
+    "unchanged protected channels",
+    "consistent angle encoding",
+    "paired initial states and noise",
+    "abort boundary",
+    "independent task scoring",
+    "control effort"
+  ]
+}

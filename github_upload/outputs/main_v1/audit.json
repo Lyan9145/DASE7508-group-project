@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "episodes": 4500,
+  "trace_rows": 449882,
+  "paired_initial_states": 90,
+  "noise_observation_keys": 9000,
+  "checks": [
+    "snapshot hashes",
+    "unchanged protected channels",
+    "consistent angle encoding",
+    "attack window and amplitude",
+    "paired attack schedules",
+    "previous-velocity correction",
+    "paired initial states and noise",
+    "abort boundary",
+    "independent task scoring",
+    "control effort"
+  ]
+}
