@@ -1,0 +1,18 @@
+usage: demo.py [-h] [--model MODEL] [--random] [--episodes EPISODES]
+               [--attack {clean,bias,ramp,random_bias,random_ramp}]
+               [--epsilon EPSILON] [--duration DURATION]
+               [--monitor-threshold MONITOR_THRESHOLD] [--legacy-sampling]
+
+options:
+  -h, --help            show this help message and exit
+  --model MODEL         SAC model path (prefers synchronized seed 1 when
+                        available)
+  --random              Use random actions instead of the trained policy
+  --episodes EPISODES
+  --attack {clean,bias,ramp,random_bias,random_ramp}
+  --epsilon EPSILON
+  --duration DURATION
+  --monitor-threshold MONITOR_THRESHOLD
+                        Frozen calibrated threshold in metres; enables
+                        correction
+  --legacy-sampling

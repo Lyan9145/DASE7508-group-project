@@ -1,0 +1,49 @@
+{
+  "models": [
+    "/home/caspianwu/HKU_Sem1/DASE7508-group-project/github_upload/outputs/sac_seed_1/model.zip"
+  ],
+  "out": "/home/caspianwu/HKU_Sem1/DASE7508-group-project/github_upload/outputs/pilot_checked_20261022",
+  "episodes": 6,
+  "calibration_episodes": 100,
+  "epsilons": [
+    0.02,
+    0.05,
+    0.1
+  ],
+  "durations": [
+    5,
+    20
+  ],
+  "start": 20,
+  "noise_sigma": 0.002,
+  "calibration_base": 200000,
+  "test_base": 500000,
+  "phase": "pilot",
+  "no_traces": false,
+  "started_utc": "2026-10-22T08:29:19.225621+00:00",
+  "python": "3.11.17",
+  "platform": "Linux-7.0.0-34-generic-x86_64-with-glibc2.39",
+  "packages": {
+    "torch": "2.14.1+cpu",
+    "numpy": "2.4.6",
+    "gymnasium": "1.4.0",
+    "mujoco": "3.15.0",
+    "stable-baselines3": "2.9.0"
+  },
+  "random_control": "independent +/- sign each observation, same amplitude envelope",
+  "ramp": "epsilon*(window_index+1)/duration",
+  "sign_balance": "alternating +/- across paired initial states",
+  "initialization": "observation 0 known clean, estimator initialization only",
+  "success": "100 actions, no abort, last 10 post-action true distances mean <= 0.03m",
+  "synchronized": true,
+  "model_sha256": {
+    "/home/caspianwu/HKU_Sem1/DASE7508-group-project/github_upload/outputs/sac_seed_1/model.zip": "5e1c824ef6bf6dfa006927f3e393cdb79e9b6472824732a84c48d3df09c43165"
+  },
+  "implementation_sha256": {
+    "evaluate.py": "3c263fc49ee6470a44fde2495077bf4ab633c800ea0b0af7d8c671489a8c8d7c",
+    "security.py": "00f8204a3da7f6ff76346ca64dff4f0313b271702c6c4f9f5061ed10afa81cb8",
+    "reacher_env.py": "170ce9e876e9040650cdee863726d7182201e13f6f9b1b95c6d45f1072647745",
+    "train.py": "5c306d4c12ac97a108dfd75ea7dd5d3deb2712a0174c566070c812d7bc9495f5"
+  },
+  "git_head": "eec720d84c9a938b5a8f26aa532a80b97f0ad6f5"
+}

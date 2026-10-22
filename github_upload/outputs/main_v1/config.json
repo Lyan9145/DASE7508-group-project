@@ -1,0 +1,90 @@
+{
+  "models": [
+    "/home/caspianwu/HKU_Sem1/DASE7508-group-project/github_upload/outputs/sac_seed_1_sync/model.zip",
+    "/home/caspianwu/HKU_Sem1/DASE7508-group-project/github_upload/outputs/sac_seed_2_sync/model.zip",
+    "/home/caspianwu/HKU_Sem1/DASE7508-group-project/github_upload/outputs/sac_seed_3_sync/model.zip"
+  ],
+  "out": "/home/caspianwu/HKU_Sem1/DASE7508-group-project/github_upload/outputs/main_v1",
+  "episodes": 30,
+  "calibration_episodes": 100,
+  "epsilons": [
+    0.02,
+    0.05,
+    0.1
+  ],
+  "durations": [
+    5,
+    20
+  ],
+  "start": 20,
+  "noise_sigma": 0.002,
+  "calibration_base": 300000,
+  "test_base": 800000,
+  "phase": "main",
+  "plan": "/home/caspianwu/HKU_Sem1/DASE7508-group-project/github_upload/main_plan.json",
+  "no_traces": false,
+  "started_utc": "2026-10-22T08:47:15.293779+00:00",
+  "python": "3.11.17",
+  "platform": "Linux-7.0.0-34-generic-x86_64-with-glibc2.39",
+  "packages": {
+    "torch": "2.14.1+cpu",
+    "numpy": "2.4.6",
+    "gymnasium": "1.4.0",
+    "mujoco": "3.15.0",
+    "stable-baselines3": "2.9.0"
+  },
+  "random_control": "independent +/- sign each observation, same amplitude envelope",
+  "ramp": "epsilon*(window_index+1)/duration",
+  "sign_balance": "alternating +/- across paired initial states",
+  "initialization": "observation 0 known clean, estimator initialization only",
+  "success": "100 actions, no abort, last 10 post-action true distances mean <= 0.03m",
+  "synchronized": true,
+  "model_sha256": {
+    "/home/caspianwu/HKU_Sem1/DASE7508-group-project/github_upload/outputs/sac_seed_1_sync/model.zip": "7f2b85e22601fd847793710991d245f8b6975ef935fa5a2e0592ca83f219bc24",
+    "/home/caspianwu/HKU_Sem1/DASE7508-group-project/github_upload/outputs/sac_seed_2_sync/model.zip": "dc3d8fb11d9f874b5bdee1384af18d3c4a947900a2105201d3382363fc7141b9",
+    "/home/caspianwu/HKU_Sem1/DASE7508-group-project/github_upload/outputs/sac_seed_3_sync/model.zip": "2ba35bea85ccbbfdb50d16cfa8257b2362329202c67fe6c716d58dc8b577616f"
+  },
+  "implementation_sha256": {
+    "evaluate.py": "dfdcaa76ee24ed5dbd59ef6612a9c3416d87505553dad3c91b417c4d5d8fe7ec",
+    "security.py": "00f8204a3da7f6ff76346ca64dff4f0313b271702c6c4f9f5061ed10afa81cb8",
+    "reacher_env.py": "170ce9e876e9040650cdee863726d7182201e13f6f9b1b95c6d45f1072647745",
+    "train.py": "5c306d4c12ac97a108dfd75ea7dd5d3deb2712a0174c566070c812d7bc9495f5"
+  },
+  "frozen_plan": {
+    "version": 1,
+    "frozen_before_main_testing": true,
+    "created_local": "2026-10-22T16:34:51+08:00",
+    "decision": "Retain Proposal 2.0 settings after the six-state pilot. Do not increase attacks to force failures. Report transient effects and ineffective attacks.",
+    "models": [
+      "outputs/sac_seed_1_sync/model.zip",
+      "outputs/sac_seed_2_sync/model.zip",
+      "outputs/sac_seed_3_sync/model.zip"
+    ],
+    "training_seeds": [
+      1,
+      2,
+      3
+    ],
+    "episodes": 30,
+    "calibration_episodes": 100,
+    "epsilons": [
+      0.02,
+      0.05,
+      0.1
+    ],
+    "durations": [
+      5,
+      20
+    ],
+    "start": 20,
+    "noise_sigma": 0.002,
+    "calibration_base": 300000,
+    "test_base": 800000,
+    "required_validation_successes": 24,
+    "required_validation_episodes": 30,
+    "evaluation_episodes": 4500,
+    "protocol": "PROTOCOL.md"
+  },
+  "plan_sha256": "42adeffee713dc7f04624c4c45c4b254c1552623f2328849b73c713baffde156",
+  "git_head": "eec720d84c9a938b5a8f26aa532a80b97f0ad6f5"
+}
