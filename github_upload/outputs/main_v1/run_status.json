@@ -1,0 +1,7 @@
+{
+  "complete": true,
+  "phase": "main",
+  "evaluation_episodes": 4500,
+  "calibration_episodes": 300,
+  "elapsed_seconds": 126.90444478799964
+}

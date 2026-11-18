@@ -20,6 +20,7 @@ def main():
     out.mkdir(exist_ok=True)
     env = gym.make('Reacher-v5', max_episode_steps=100, render_mode='rgb_array')
     obs, _ = env.reset(seed=42)
+    env.action_space.seed(42)
     base = env.unwrapped
     assert obs.shape == (10,) and env.action_space.shape == (2,)
     b0, b1, tip = [base.model.body(name).id for name in ('body0', 'body1', 'fingertip')]
