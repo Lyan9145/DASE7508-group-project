@@ -1,0 +1,42 @@
+{
+  "development": {
+    "count": 18,
+    "minimum": 910000,
+    "maximum": 912005
+  },
+  "test": {
+    "count": 90,
+    "minimum": 930000,
+    "maximum": 932029
+  },
+  "main": {
+    "count": 90,
+    "minimum": 800000,
+    "maximum": 802029
+  },
+  "pilot": {
+    "count": 6,
+    "minimum": 500000,
+    "maximum": 500005
+  },
+  "calibration": {
+    "count": 300,
+    "minimum": 900000,
+    "maximum": 902099
+  },
+  "validation": {
+    "count": 90,
+    "minimum": 11000,
+    "maximum": 13029
+  },
+  "main_calibration": {
+    "count": 300,
+    "minimum": 300000,
+    "maximum": 302099
+  },
+  "pilot_calibration": {
+    "count": 100,
+    "minimum": 200000,
+    "maximum": 200099
+  }
+}

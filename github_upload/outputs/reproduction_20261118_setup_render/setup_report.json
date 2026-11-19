@@ -1,0 +1,39 @@
+{
+  "python": "3.12.14",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "packages": {
+    "mujoco": "3.15.0",
+    "gymnasium": "1.4.0",
+    "stable-baselines3": "2.9.0",
+    "torch": "2.7.1+cu126",
+    "numpy": "2.4.6"
+  },
+  "cuda_available": true,
+  "torch_cuda": "12.6",
+  "gpu": "NVIDIA RTX 2000 Ada Generation Laptop GPU",
+  "observation_shape": [
+    10
+  ],
+  "episode_steps": 100,
+  "control_dt_seconds": 0.02,
+  "body0_origin_xy": [
+    0.0,
+    0.0
+  ],
+  "body1_offset_xy": [
+    0.1,
+    0.0
+  ],
+  "fingertip_offset_xy": [
+    0.11,
+    0.0
+  ],
+  "max_fk_error_m": 7.076311083754595e-17,
+  "max_raw_body_position_lag_m": 0.0006452024979325203,
+  "checked_steps_per_second": 2382.4555943229116,
+  "render_shape": [
+    480,
+    480,
+    3
+  ]
+}

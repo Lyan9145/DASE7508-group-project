@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "episodes": 3780,
+  "trace_rows": 369446,
+  "paired_initial_states": 90,
+  "checks": [
+    "source hashes",
+    "protected channels",
+    "paired noise",
+    "previous velocity prediction",
+    "original/improved abort boundary",
+    "independent task scoring"
+  ],
+  "prediction": "errors measured only during actual corrections; per-episode mean precedes aggregation"
+}

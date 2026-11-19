@@ -69,10 +69,10 @@ def recovery_time(distances, attack):
 
 
 def trial(model, env, geometry, threshold, attack, monitor_on, seed, trace_file,
-          policy_name, case_name, noise_seed=None):
+          policy_name, case_name, noise_seed=None, monitor_factory=KinematicMonitor):
     noise_seed = seed + 10000000 if noise_seed is None else noise_seed
     obs, info = env.reset(seed=seed, options={'noise_seed': noise_seed})
-    monitor = KinematicMonitor(geometry, threshold, env.unwrapped.dt)
+    monitor = monitor_factory(geometry, threshold, env.unwrapped.dt)
     distances = [info['truth']['distance']]
     action_norms, residuals, alarm_steps, timings = [], [], [], []
     aborted = False

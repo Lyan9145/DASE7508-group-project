@@ -6,6 +6,10 @@
 
 ## Linux / Conda
 
+Windows/mp1 的本次已验证命令与新实验入口见[根目录 README](../README.md)。
+`check_setup.py` 现在要求 `--out <全新目录>`；可加 `--no-render` 先做数值检查。
+审计历史数据必须指定 `--output <全新文件>`，避免改写历史审计。
+
 先进入本文件所在目录（仓库中的 `github_upload/`），然后执行：
 
 ```bash
@@ -15,7 +19,7 @@ python -m pip install 'torch==2.14.1' --index-url https://download.pytorch.org/w
 python -m pip install -r requirements.lock.txt
 python -m pip install -r requirements-dev.txt
 python -m pytest -q
-MUJOCO_GL=egl python check_setup.py
+MUJOCO_GL=egl python check_setup.py --out outputs/reproduction_setup_linux_new_001
 ```
 
 已有 `dase7508` 环境直接激活，不要重复创建。CPU 足够完成本实验；图形桌面可运行 `python demo.py`。离屏渲染若不支持 EGL，可使用桌面 OpenGL；物理训练与数值评估不依赖窗口。
@@ -24,9 +28,9 @@ MUJOCO_GL=egl python check_setup.py
 
 ```bash
 # 三个独立训练种子，示例逐个执行；输出目录已存在时会拒绝覆盖
-python train.py --steps 150000 --seed 1 --out outputs/sac_seed_1_sync
-python train.py --steps 150000 --seed 2 --out outputs/sac_seed_2_sync
-python train.py --steps 150000 --seed 3 --out outputs/sac_seed_3_sync
+python train.py --steps 150000 --seed 1 --out outputs/training_example_new_seed1
+python train.py --steps 150000 --seed 2 --out outputs/training_example_new_seed2
+python train.py --steps 150000 --seed 3 --out outputs/training_example_new_seed3
 
 # 小规模完整试验：100 回合校准 + 6 个初始状态 × 50 个条件 = 300 回合评估
 python evaluate.py --models outputs/sac_seed_1/model.zip --out outputs/pilot_example
@@ -37,11 +41,11 @@ python plot_results.py outputs/pilot_example
 python evaluate.py --phase main --plan main_plan.json --episodes 30 --test-base 800000 \
   --calibration-base 300000 \
   --models outputs/sac_seed_1_sync/model.zip outputs/sac_seed_2_sync/model.zip outputs/sac_seed_3_sync/model.zip \
-  --out outputs/main_v1
-python plot_results.py outputs/main_v1
-python audit_results.py outputs/main_v1
-python make_replay.py outputs/main_v1
-python plot_training.py outputs/sac_seed_1_sync outputs/sac_seed_2_sync outputs/sac_seed_3_sync --out outputs/main_v1/figures/training.png
+  --out outputs/reproduction_readme_new_001
+python plot_results.py outputs/reproduction_readme_new_001
+python audit_results.py outputs/reproduction_readme_new_001 --output outputs/reproduction_readme_new_001_audit.json
+python make_replay.py outputs/reproduction_readme_new_001
+python plot_training.py outputs/sac_seed_1_sync outputs/sac_seed_2_sync outputs/sac_seed_3_sync --out outputs/reproduction_readme_new_001/figures/training.png
 ```
 
 每次评估保存 `config.json`、实现快照、`calibration.json`、`episodes.csv`、`summary.csv/json` 和压缩逐步日志。`plot_results.py` 另生成跨策略均值/范围表和图。只有存在 `run_status.json` 且 `complete=true` 才算整轮完成。试验结果中 `phase=pilot` 不代表正式测试结论。
@@ -56,7 +60,7 @@ python plot_training.py outputs/sac_seed_1_sync outputs/sac_seed_2_sync outputs/
 ```powershell
 py -3.11 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.lock.txt
-.\.venv\Scripts\python.exe check_setup.py
+.\.venv\Scripts\python.exe check_setup.py --out outputs/reproduction_setup_windows_new_001
 .\.venv\Scripts\python.exe demo.py
 ```
 
@@ -82,7 +86,7 @@ VS Code 中执行 **Python: Select Interpreter**，选择 `.venv/Scripts/python.
 ## 训练与曲线
 
 ```powershell
-.\.venv\Scripts\python.exe train.py --steps 150000 --seed 2 --eval-episodes 30
+.\.venv\Scripts\python.exe train.py --steps 150000 --seed 2 --eval-episodes 30 --out outputs/training_windows_new_seed2
 .\.venv\Scripts\tensorboard.exe --logdir outputs
 ```
 

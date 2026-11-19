@@ -1,0 +1,17 @@
+{
+  "scenario": "representative",
+  "policy": "sac_seed_1_sync",
+  "seed": 930000,
+  "noise_seed": 10930000,
+  "start": 70,
+  "duration": 20,
+  "epsilon_rad": 0.1,
+  "sign": 1,
+  "threshold_m": 0.006068663281872213,
+  "dt_seconds": 0.02,
+  "model_sha256": "7f2b85e22601fd847793710991d245f8b6975ef935fa5a2e0592ca83f219bc24",
+  "calibration_source": "C:\\Users\\76803\\Desktop\\course\\7508\\DASE7508-group-project-codex-sensor-spoofing-pilot\\github_upload\\outputs\\exploratory_20261118_compatible\\test\\calibration.json",
+  "selected_case": "First policy and first new test state, largest declared bias, latest start",
+  "truth_usage": "Evaluator/display only; never supplied to model.predict or monitor.process",
+  "rendering": "Separate render environment after numeric trajectories are fixed; GIF is a slowed simulator replay, not desktop video"
+}

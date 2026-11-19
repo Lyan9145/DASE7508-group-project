@@ -1,1 +1,9 @@
+# Preserve source line endings; keep archived evidence byte-identical.
+* text=auto eol=lf
 *.csv text eol=lf
+*.png binary
+*.gif binary
+*.zip binary
+*.gz binary
+/github_upload/outputs/** -text
+/github_upload/requirements.lock.txt -text

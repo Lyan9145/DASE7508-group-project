@@ -81,3 +81,8 @@ is final course-report/presentation editing and installation reproduction on a
 second machine. Late attacks or alternative alarm/abort rules would be separate
 exploratory studies with fresh frozen settings and test seeds; the main results
 must stay intact.
+
+
+## 2026-11-18 final acceptance and presentation preparation
+
+Read the actual course presentation PDF and group guidelines from the parent course directory. Recomputed compatible exploratory/main CSV metrics from819328 trace rows (3780+4500 episodes). Corrected metadata wording: all short-attack detection observation windows are complete; three attack-action windows and four attack-plus10 distance windows are incomplete. No primary result changes, no retraining or parameter search. Added10-slide content, bilingual notes/Q&A, five compatible-data figures, a paired annotated MuJoCo replay and team ZIP. Package109-file hashes, numeric smoke and16 tests passed on this computer; no second-computer or MP4 claim. Original141 protected-file hashes unchanged. See FINAL_ACCEPTANCE.md.
