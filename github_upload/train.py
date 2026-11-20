@@ -12,7 +12,7 @@ import torch
 from stable_baselines3 import SAC
 from stable_baselines3.common.monitor import Monitor
 
-from reacher_env import make_env
+from framework.core.reacher_env import make_env
 
 
 def main():

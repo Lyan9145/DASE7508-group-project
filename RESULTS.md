@@ -1,53 +1,53 @@
-# 小组实验进度与结果｜2026-10-22
+# Group Experiment Progress and Results | 2026-10-22
 
-本次约一小时目标已经完成：修复基础问题、实现攻击和防御、通过测试、完成预实验，并进一步完成了提案规定的三策略正式实验。当前可以进入结果讨论和课程报告整理阶段。
+The approximately one-hour integration session is complete: foundational bugs were fixed, attacks and mitigation were implemented, tests passed, the pilot completed, and the frozen three-policy main experiment specified in Proposal 2.0 was executed and audited.
 
-## 结论先行
+## Executive Summary
 
-在本提案的威胁模型、幅值、早期攻击窗口和任务判据下，所有不启用防御的回合都成功到达目标，未观察到攻击将正常成功变成任务失败。防御减轻了部分瞬态轨迹偏移，但出现两次规则性中止，因此不能声称它提高了最终任务成功率。
+Under the Proposal 2.0 threat model, amplitudes, early attack window, and task success criterion, all unprotected episodes reached the target successfully, and no attack converted a clean success into a task failure. The monitor reduced some transient trajectory deviation, but introduced two rule-induced aborts; therefore, it cannot be claimed to improve terminal task success rate.
 
-两次中止来自**同一个初始状态**（策略 seed 3、测试 seed 802009）在固定偏移和匹配随机符号对照中的重复表现，并非两个独立失效初始状态。攻击结束后的噪声误报使连续报警数从 20 增至 21，按事先规定中止；当时距离目标约 3.85 mm。
+Both aborts occurred on the **same initial state** (policy seed 3, test seed 802009), repeated under `bias` and its matched `random_bias` control, rather than two independent failing states. A post-attack sensor-noise false alarm extended the 20-step attack alarm streak to 21, triggering the pre-specified abort rule while true fingertip-to-target distance was approximately 3.85 mm.
 
-## 已完成的修复与实现
+## Completed Fixes and Implementations
 
-- 训练噪声默认跨回合持续推进；显式 noise_seed 可复现配对噪声。
-- 在独立 MuJoCo data 上同步位置采样和评分真值，不修改实际仿真状态。无噪声运动学误差约为浮点精度，物理轨迹不变性测试通过。
-- 训练和评估输出拒绝覆盖；原始上传模型与验证记录保留。
-- joint0 bias/ramp 攻击与匹配的随机符号对照，只修改索引 0/2 的 cos/sin。
-- 运动学残差检测、每策略独立 99% 分位数校准、上一时刻速度积分修正，以及严格超过 20 次连续报警的中止。
-- 独立验证/校准/测试 seed、冻结正式配置、模型哈希、执行代码快照、完整日志和派生分析快照。
-- 11 项测试全部通过；依赖、物理环境及 EGL 离屏渲染检查通过。
+- Training sensor noise advances continuously across episodes by default; explicit `noise_seed` enables paired-noise replay.
+- Position readings and evaluation truth are recomputed via `mj_forward` on an isolated `MjData` without modifying simulator state. Noiseless kinematic error is at floating-point precision, and physics trajectory invariance tests pass.
+- Training and evaluation outputs refuse to overwrite existing directories; the original uploaded model and validation artifact remain intact.
+- `joint0` `bias`/`ramp` spoofing and matched random-sign controls modify only indices `0` and `2` (`cos`/`sin`).
+- Kinematic residual monitor, per-policy 99th-percentile clean calibration, previous-velocity integration correction, and abort when consecutive alarms strictly exceed 20.
+- Disjoint validation/calibration/test seeds, frozen main plan, model hashes, executed code snapshots, full traces, and derived analysis snapshots.
+- All 11 Phase-1 tests passed; dependencies, physics semantics, and EGL offscreen rendering checks passed.
 
-## 三个新策略的训练与独立验证
+## Three New Policies: Training and Independent Validation
 
-新策略均采用同步采样、不重复的训练噪声和相同训练超参数；各训练 150,000 步，没有触发时间上限。三次训练并行进行，各约 19 分钟。验证为每策略独立的 30 个回合，入选门槛为至少 24/30。
+Each policy was trained with synchronized sampling, non-repeating training noise, and identical hyperparameters for 150,000 steps without hitting the wall-clock cap. Three runs executed in parallel (~19 minutes each). Each policy was validated on 30 independent episodes (qualification threshold: at least 24/30).
 
-| 训练 seed | 步数 | 验证成功 | 最后十步均距的总体平均 | 最差回合 |
+| Training Seed | Steps | Validation Successes | Mean Final-10-Step Distance | Worst Episode |
 |---|---:|---:|---:|---:|
 | 1 | 150,000 | 30/30 | 0.535 cm | 1.536 cm |
 | 2 | 150,000 | 30/30 | 0.602 cm | 1.536 cm |
 | 3 | 150,000 | 30/30 | 0.602 cm | 2.012 cm |
 
-原始上传模型也重新验证了旧模式和同步模式，均为 30/30 成功；旧模式与上传验证指标的最大差异约 5.94×10⁻⁹ m。该复核使用原验证 seed，不属于新的正式测试证据。
+The original uploaded model was also re-validated in both legacy and synchronized modes (30/30 in both; maximum discrepancy vs. recorded legacy metric ~`5.94e-9 m`). That check reused original validation seeds and is not treated as new held-out test evidence.
 
-## 正式实验配置与完整性
+## Main Experiment Configuration and Integrity
 
-- 正式配置在运行前冻结于 `github_upload/main_plan.json`，没有根据正式结果改变攻击或阈值。
-- 3 策略 × 每策略 30 个初始状态 × 50 条件 = **4,500 回合**；另有 **300 回合独立干净校准**。4,500 回合是配对条件重复，不是 4,500 个独立初始状态。
-- ε = 0.02 / 0.05 / 0.10 rad，持续 5 / 20 步，bias/ramp；同幅值包络随机符号对照；防御开关；正常条件复用。
-- 默认攻击窗口从观测步 20 开始；每回合 100 个控制步，控制间隔 0.02 秒；位置噪声每坐标 σ=2 mm。
-- 校准 seed 块 300000/301000/302000，测试 seed 块 800000/801000/802000；与验证及预实验分开。
-- 真正执行的控制步为 449,880；日志含 449,882 条观测记录，差额包含两条中止记录。
-- 校准与正式评估合计约 126.9 秒；CPU 为 Intel Core i5-14600KF，Python 3.11.17，Torch 2.14.1+cpu，MuJoCo 3.15.0，Gymnasium 1.4.0，SB3 2.9.0。
-- 全量日志独立审计通过：配对状态和噪声、攻击窗口/幅值/符号、保护通道、角度修正、中止边界、任务评分、控制代价、代码和方案哈希。
+- Configuration frozen before main testing in `github_upload/main_plan.json`; attacks and thresholds were not adjusted after observing results.
+- 3 policies x 30 initial states per policy x 50 conditions = **4,500 episodes**, plus **300 independent clean calibration episodes**. The 4,500 episodes represent paired condition repetitions across 90 policy/initial-state pairs, not 4,500 independent initial states.
+- Amplitudes `epsilon` = `0.02 / 0.05 / 0.10 rad`, durations `5 / 20` steps, `bias`/`ramp`, amplitude-matched random-sign controls, monitor off/on, and reused clean baselines.
+- Default attack window starts at observation step `20`; 100 control steps per episode, `dt = 0.02 s`, position noise `sigma = 2 mm` per coordinate.
+- Calibration seed blocks `300000/301000/302000` and test seed blocks `800000/801000/802000` are disjoint from validation and pilot blocks.
+- Executed control actions: `449,880`; trace records: `449,882` (difference corresponds to the two aborted observation records).
+- Calibration + main evaluation took ~`126.9 s` (CPU: Intel Core i5-14600KF, Python 3.11.17, Torch 2.14.1+cpu, MuJoCo 3.15.0, Gymnasium 1.4.0, SB3 2.9.0).
+- Independent full-trace audit passed: paired states and noise, attack windows/amplitudes/signs, protected channels, angle correction, abort boundary, task scoring, control effort, and code/plan hashes.
 
-## 主结果
+## Main Results
 
-所有无防御条件（包括正常和受扰条件）合计 **2250/2250 成功**；有防御条件合计 **2248/2250 成功**。所有未防御 bias/ramp 设置的攻击成功率均为 0/90。防御条件中的 bias ε=0.10、20 步为 89/90 成功；其匹配随机符号对照也是 89/90；其他条件为 90/90。
+All unprotected conditions (clean and perturbed) achieved **2250/2250** successes; protected conditions achieved **2248/2250** successes. Attack success rate was `0/90` for every unprotected `bias`/`ramp` setting. Under defense, `bias` `epsilon=0.10`, 20 steps succeeded `89/90` (and its matched random-sign control `89/90`); all other conditions succeeded `90/90`.
 
-下面按三策略各 30 状态合计展示。距离为“攻击窗口及后续 10 步的平均距离，相对配对正常轨迹的增加”，单位 mm。检测漏检按窗口内无报警统计；正常噪声导致的窗口内报警也会计入检测，与提案定义一致。
+Aggregated across the 3 policies (30 paired states each; distance delta is mean target distance in the attack window plus 10 following steps minus the paired clean trajectory, in mm; missed detections count zero alarms inside the attack window, noting noise alarms inside the window also count per protocol):
 
-| 攻击 | ε(rad) | 步数 | 无防御距离增量(mm) | 有防御距离增量(mm) | 漏检/90 | 防御中止/90 |
+| Attack | `epsilon` (rad) | Steps | Unprotected Delta (mm) | Protected Delta (mm) | Missed / 90 | Defense Aborts / 90 |
 |---|---:|---:|---:|---:|---:|---:|
 | bias | 0.02 | 5 | 0.034 | 0.033 | 58 | 0 |
 | bias | 0.05 | 5 | 0.139 | 0.104 | 4 | 0 |
@@ -62,40 +62,39 @@
 | ramp | 0.05 | 20 | 0.139 | 0.129 | 14 | 0 |
 | ramp | 0.10 | 20 | 0.582 | 0.252 | 2 | 0 |
 
-ε=0.10、20 步 bias 的平均额外距离从约 1.62 mm 降至 0.18 mm，但其中一次防御试验中止，窗口不完整：该试验只比较中止前可观测片段与等长正常片段。中止仍按任务失败计入，次要距离指标不能替代成功率结论。每策略原始指标、范围、终端误差、控制代价、检测延迟和恢复时间见 CSV/JSON。
+For `bias` `epsilon=0.10`, 20 steps, mean extra distance dropped from ~`1.62 mm` to `0.18 mm`, but one protected trial aborted (incomplete window, compared against equal-length clean prefix). Aborts count as task failures; secondary distance metrics do not override task success conclusions. Per-policy raw metrics, ranges, terminal errors, control effort, detection delays, and recovery times are stored in CSV/JSON.
 
-## 误报与失败案例
+## False Alarms and Failure Cases
 
-| 策略 | 校准阈值(mm) | 干净逐步误报率 | 至少一次误报的干净回合 |
+| Policy | Calibrated Threshold (mm) | Clean Per-Step FA Rate | Clean Episodes with >= 1 Alarm |
 |---|---:|---:|---:|
-| sac_seed_1_sync | 6.158 | 0.94% | 70.0% |
-| sac_seed_2_sync | 6.020 | 1.14% | 76.7% |
-| sac_seed_3_sync | 6.071 | 0.98% | 63.3% |
+| `sac_seed_1_sync` | 6.158 | 0.94% | 70.0% |
+| `sac_seed_2_sync` | 6.020 | 1.14% | 76.7% |
+| `sac_seed_3_sync` | 6.071 | 0.98% | 63.3% |
 
-合计逐步误报率约 **1.02%**，但 **63/90（70%）** 的干净回合出现至少一次误报。99% 分位数对应逐步阈值，不对应 1% 的回合误报率；若每步独立误报概率为 1%，99 次机会至少误报一次的概率约为 63%。干净条件下本次未出现中止或任务失败。
+Overall clean step false-alarm rate was ~**1.02%**, while **63/90 (70%)** of clean episodes had at least one alarm. The 99th percentile calibrates a per-step threshold rather than a 1% per-episode rate; at 1% independent per-step probability over 99 opportunities, at least one alarm occurs with probability `1 - 0.99**99 ≈ 63%`. No clean episode aborted or failed.
 
-两次失败都是 seed 802009 在防御条件下于步 40 中止：步 20–39 的 20 次攻击报警后，攻击已经结束，但该步噪声残差仍超过阈值，形成第 21 次报警。实际距离仅约 0.385 cm。单独按相同模型和 seed 重跑，已精确复现两种条件下“无防御成功、防御中止”的现象。它是当前规范的副作用，未擅自改变规范或剔除失败记录。
+Both failures occurred on seed `802009` under defense at step `40`: after 20 attack alarms during steps `20–39`, the attack ended, but Gaussian sensor noise at step `40` pushed the residual over threshold for a 21st consecutive alarm while true distance was only ~`0.385 cm`. Independent single-case re-runs reproduced both outcomes exactly; records were retained and the protocol was not retuned retroactively.
 
-监测计算平均约 **13.7 μs/步**，不含模型推理、物理模拟、日志和首次初始化。该时间仅代表此机器与本次实现。
+Monitor overhead averaged ~**13.7 us/step** (excluding model inference, physics, logging, and initialization; specific to this machine and implementation).
 
-## 如何解释与后续工作
+## Interpretation and Next Steps
 
-当前结论应写为：在本设定下，单个关节的小幅短时欺骗未导致最终到达失败；运动学检测能减轻部分瞬态偏差，但小幅/渐增攻击仍会漏检，且连续报警中止规则可能引入任务失败。
+Conclusion within Proposal 2.0 bounds: small, short single-joint spoofing did not cause terminal reaching failures; kinematic detection reduced some transient deviations, yet small/ramping attacks still produced missed detections and consecutive-alarm aborts introduced task failures.
 
-可能原因包括策略直接接收可信的末端相对位置，以及攻击较早结束、留下较长恢复时间。两连杆总长 0.21 m，0.02 rad 欺骗的无噪声几何差最大约 4.2 mm，小于约 6 mm 的阈值；不能因此宣称噪声下绝对不可检测。详见 `github_upload/ANALYSIS_NOTES.md`。
+Likely reasons include direct policy access to trusted relative fingertip position and early attack termination leaving long recovery horizons. With total link length `0.21 m`, a `0.02 rad` offset yields at most ~`4.2 mm` noiseless geometric discrepancy, below the ~`6 mm` noise-calibrated threshold (see [github_upload/ANALYSIS_NOTES.md](github_upload/ANALYSIS_NOTES.md)).
 
-主体实验已经完成。小组接下来优先整理课程最终报告和演示：保留零攻击成功率、漏检、误报及中止案例；将每策略结果和跨策略范围放入报告；用冻结环境在另一台机器做安装复现。若继续试验，更晚的攻击窗口或防御的去抖/迟滞规则必须作为单独探索方案，先冻结新配置和校准，再用新测试集，不能替换这份正式结果。
+Subsequent exploratory studies (such as late-window or multi-channel attacks and alternative defenses) must be run in separate output directories with fresh disjoint seeds and frozen configurations without altering `outputs/main_v1/`. (For the Phase-2 unified extension framework, see [github_upload/FRAMEWORK_GUIDE.md](github_upload/FRAMEWORK_GUIDE.md).)
 
-这些结果只适用于本仿真、受保护位置/速度通道及理想几何假设，不能直接外推真实机器人安全性。
+These simulation results depend on idealized geometry and protected position/velocity assumptions and do not generalize directly to physical hardware safety.
 
-## 检查入口
+## Artifact Index
 
-- 实验配置与指标定义：`github_upload/PROTOCOL.md`、`main_plan.json`。
-- 正式结果：`github_upload/outputs/main_v1/summary.csv`、`aggregate.csv`、`episodes.csv`。
-- 完成与审计：`run_status.json`、`audit.json`；失败诊断：`failure_analysis.json`、`failure_cases.csv`。
-- 完整传感器/动作/真实轨迹日志：`traces.jsonl.gz`；执行和分析源码快照：`source/`、`analysis_source/`。
-- 图表：`figures/paired_results.png`、`detection_rates.png`、`example_trajectory.png`、`abort_case_1.png`、`abort_case_2.png`。
-- 动画：`figures/arm_replay.gif`；训练曲线：`outputs/session_20261022/training_curves.png`。
-- 命令与安装：`github_upload/README.md`；精确 Linux CPU 依赖：`environment-linux-cpu.lock.txt`。
+- Protocol and metrics: [github_upload/PROTOCOL.md](github_upload/PROTOCOL.md), `github_upload/main_plan.json`
+- Main results: `github_upload/outputs/main_v1/summary.csv`, `aggregate.csv`, `episodes.csv`
+- Completion & audit: `run_status.json`, `audit.json`; failure diagnostics: `failure_analysis.json`, `failure_cases.csv`
+- Full logs & snapshots: `traces.jsonl.gz`, `source/`, `analysis_source/`
+- Figures & replay: `figures/paired_results.png`, `detection_rates.png`, `example_trajectory.png`, `abort_case_1.png`, `abort_case_2.png`, `figures/arm_replay.gif`, `outputs/session_20261022/training_curves.png`
+- Setup & locks: [github_upload/README.md](github_upload/README.md), `github_upload/environment-linux-cpu.lock.txt`
 
-初始预实验位于 `pilot_checked_20261022`。较早的 `pilot_20261022` 保留为历史，含已修正的正常回合检测延迟显示问题，不用于正式结论。
+The corrected pilot is in `pilot_checked_20261022`; `pilot_20261022` is retained solely as history (with a previously fixed display-metric bug) and is not used for formal conclusions.

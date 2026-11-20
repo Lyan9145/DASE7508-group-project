@@ -1,5 +1,5 @@
 """Exploratory bounded recovery confirmation; same observation trust boundary."""
-from security import KinematicMonitor
+from .security import KinematicMonitor
 
 
 class RecoveryMonitor(KinematicMonitor):

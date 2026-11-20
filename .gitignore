@@ -24,3 +24,19 @@ deliverables/
 *.key
 # New full traces remain local; already-tracked historical traces remain in Git.
 github_upload/outputs/**/traces.jsonl.gz
+
+# OS, editor, and temporary scratch files
+.DS_Store
+Thumbs.db
+.idea/
+*.tmp
+*.bak
+*~
+
+# Local Phase-2 scratch, review, dev, and smoke run outputs
+github_upload/outputs/**/tensorboard/
+github_upload/outputs/review_*/
+github_upload/outputs/smoke_*/
+github_upload/outputs/dev_*/
+github_upload/outputs/check_setup_*/
+github_upload/outputs/phase2_*_smoke*/

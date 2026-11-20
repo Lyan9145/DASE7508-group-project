@@ -13,7 +13,7 @@ import torch
 from PIL import Image
 from stable_baselines3.common.env_checker import check_env
 
-from reacher_env import make_env
+from framework.core.reacher_env import make_env
 
 
 def main():

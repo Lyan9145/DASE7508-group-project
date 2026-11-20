@@ -1,60 +1,52 @@
-# Fixed paired demo and recording guide
+# Fixed Paired Demo and Recording Guide
 
-已实际完成：四模式固定边界案例的数值运行、MuJoCo RGB渲染、GIF生成、HTML文件生成和step40截图检查。第二组预声明首状态已完成四模式数值检查。**未生成桌面录屏MP4，未验证人在场的浏览器播放/投影效果。** GIF是生成的慢速模拟器回放，不是实录桌面；课程允许annotated trace作为代表运行。
+Completed artifacts: numerical runs for the four-mode boundary case, MuJoCo RGB rendering, GIF generation, HTML replay generation, and step-40 static frame checks. Numerical verification for the second predeclared first-state scenario is also complete. **No desktop screen-recording MP4 has been produced, and live browser/projector playback has not yet been verified manually.** The generated GIF is a slowed simulator replay rather than a desktop recording; the course instructions permit annotated traces as representative runs.
 
-先在仓库根目录打开现成回放（无需重跑）：
+Open the pre-generated replay from the repository root (no rerun needed):
 
 ```powershell
 Invoke-Item .\github_upload\outputs\final_acceptance_20261118\demo_boundary_v2\replay.html
-# 静态备份
+# Static fallback
 Invoke-Item .\github_upload\outputs\final_acceptance_20261118\demo_boundary_v2\boundary_step40.png
 ```
 
-固定配置：policy3/model，seed802009，noise_seed10802009，bias−0.10rad，观测窗[20,40)，dt20ms；读取compatible_main的policy3校准阈值，wait=1。四模式共享初始状态、噪声和攻击日程，正常模式只取消注入。原规则40动作后在观测40中止；其余三种完成100动作。本例已知历史失败，**不是平均效果**，总体结果见图04。
+Fixed configuration: `policy3` (`sac_seed_3_sync`), seed `802009`, `noise_seed=10802009`, `bias=-0.10 rad`, attack window `[20, 40)`, `dt=20 ms`, calibrated `policy3` threshold from `compatible_main`, and `wait=1`. All four modes share the same initial state, sensor-noise stream, and attack schedule (normal mode disables injection). The original monitor aborts at observation `40` after 40 actions; the other three modes complete all 100 actions. This example is a known historical failure case, **not average performance** (see Figure `04_defense_cost.png` for aggregate counts).
 
-真距离仅用于显示与任务评分，先把数值轨迹固定，再用独立render环境重放；模型只接收policy_obs，monitor只接收reported。界面显示模式、模拟时间/步、攻击窗/注入量、真距离mm、报警/连续数、中止；中止画面冻结并标识，不伪装成后续动作。GIF按每两步取一帧，慢放，时间标签仍是模拟时间。
+True distance is used strictly for display and task scoring. Numerical trajectories are recorded first and replayed in a separate render environment; the policy receives only `policy_obs` and the monitor receives only `reported`. Overlays display mode, simulation time/step, attack window/injection, true distance (mm), alarm/streak, and abort state. Aborted frames freeze with an abort label rather than fabricating subsequent actions. The GIF samples every second step with simulation-time labels.
 
-重新生成四模式带显示的demo（仓库根目录；每次全新目录）：
+*(Note: `presentation_demo.py` referenced below has been archived to `github_upload/legacy/presentation_demo.py`; active Phase-2 multi-attack/multi-defense demos use `github_upload/demo.py` and `github_upload/plot_matrix.py`.)*
+
+Regenerating the four-mode annotated demo from the archived script requires `github_upload/legacy` and `github_upload/framework/core` on `PYTHONPATH` (with a fresh output directory):
 
 ```powershell
-$py = (Resolve-Path .\.venv\Scripts\python.exe).Path
+$env:PYTHONPATH = "github_upload;github_upload\legacy;github_upload\framework\core"
 $run = Get-Date -Format 'yyyyMMdd_HHmmss_fff'
-& $py github_upload/presentation_demo.py --scenario boundary --mode all --out "github_upload/outputs/demo_boundary_$run" --open
+python github_upload/legacy/presentation_demo.py --scenario boundary --mode all --out "github_upload/outputs/demo_boundary_$run" --open
 ```
 
-分别运行四种固定模式（会保存各自的回放和CSV）：
+Individual modes, representative example, and numeric-only smoke check:
 
 ```powershell
-& $py github_upload/presentation_demo.py --scenario boundary --mode normal --out "github_upload/outputs/demo_normal_$run"
-& $py github_upload/presentation_demo.py --scenario boundary --mode attack --out "github_upload/outputs/demo_attack_$run"
-& $py github_upload/presentation_demo.py --scenario boundary --mode original --out "github_upload/outputs/demo_original_$run"
-& $py github_upload/presentation_demo.py --scenario boundary --mode improved --out "github_upload/outputs/demo_improved_$run"
+python github_upload/legacy/presentation_demo.py --scenario boundary --mode normal --out "github_upload/outputs/demo_normal_$run"
+python github_upload/legacy/presentation_demo.py --scenario boundary --mode attack --out "github_upload/outputs/demo_attack_$run"
+python github_upload/legacy/presentation_demo.py --scenario boundary --mode original --out "github_upload/outputs/demo_original_$run"
+python github_upload/legacy/presentation_demo.py --scenario boundary --mode improved --out "github_upload/outputs/demo_improved_$run"
+python github_upload/legacy/presentation_demo.py --scenario representative --out "github_upload/outputs/demo_representative_$run"
+python github_upload/legacy/presentation_demo.py --scenario boundary --numeric-only --out "github_upload/outputs/demo_numeric_$run"
 ```
 
-模型1首个探索状态/较晚窗口的弱效果示例（不按效果选择）：
+Active `github_upload/demo.py` provides an interactive human window across all registered attacks and defenses, e.g., `cd github_upload && python demo.py --attack clean --episodes 1`. Neither retraining nor CUDA/EGL is required.
 
-```powershell
-& $py github_upload/presentation_demo.py --scenario representative --out "github_upload/outputs/demo_representative_$run"
-```
+## ~70-Second Walkthrough Script (Within Speaker E's 75s Slot)
 
-只做最短数值检查，不创建渲染器/窗口：
-
-```powershell
-& $py github_upload/presentation_demo.py --scenario boundary --numeric-only --out "github_upload/outputs/demo_numeric_$run"
-```
-
-现有demo.py命令仍可用，提供原来的human窗口；没有状态叠层，不能替代本轮注释对照。希望看动作时可运行`& $py github_upload/demo.py --attack clean --episodes 1`。不必重新训练，不需要CUDA或EGL。
-
-## 约70秒录屏/讲解脚本（包含在E的75秒内）
-
-| 时间 | 画面/操作 | 英文讲解重点及证明范围 |
+| Time | Visual / Action | Spoken Focus & Scope |
 |---|---|---|
-| 0–10s | 显示四面板配置标题 | “This is a selected historical boundary case, not the average result.” 固定模型/seed/噪声，避免观众误认为随机典型效果 |
-| 10–25s | 重播GIF，指四种模式和攻击窗 | “Only the angle observation is corrupted. The physical state is not directly changed.” 物理动作看起来相近是允许结果 |
-| 25–45s | 切静态boundary_step40.png，可缩放 | “At step40, the original rule aborts at alarm21; wait+1 continues. True distance is display-only.” 同一时刻看中止边界，不能说检测更准确 |
-| 45–60s | 回GIF看冻结面板与完成CSV | “Normal and unprotected attack also finish. The original aborted panel is frozen.” 展示副作用，而非优于无防御 |
-| 60–70s | 切图04/末页统计 | “Across held-out states, four short-case aborts are avoided, with a20ms sustained-response cost.” 案例与总体区分 |
+| 0–10s | Show 4-panel header & config | "This is a selected historical boundary case, not the average result." State fixed model/seed/noise. |
+| 10–25s | Play GIF, highlight 4 modes & window | "Only the angle observation is corrupted. The physical state is not directly changed." Note physical paths look similar. |
+| 25–45s | Switch to `boundary_step40.png` (zoomable) | "At step 40, the original rule aborts at alarm 21; wait+1 continues. True distance is display-only." Clarify this shifts the abort boundary rather than detection accuracy. |
+| 45–60s | Return to GIF showing frozen panel & completed CSV | "Normal and unprotected attack also finish. The original aborted panel is frozen." Show side effect rather than claiming superiority over no defense. |
+| 60–70s | Switch to Figure 04 / summary statistics | "Across held-out states, four short-case aborts are avoided, with a 20 ms sustained-response cost." Distinguish single case from aggregate stats. |
 
-人工录屏：先打开本地HTML并检查GIF循环、字体和四模式显示；用Windows可用的录屏工具录制上述70秒，保持“selected case”和“display only”标签；播放一次检查声音、大小与实际总时长。工具不可用时课程允许直接用annotated trace或静态截图备份。保存文件时注明screen recording或simulator replay，不能把本轮GIF称为已完成MP4录屏。
+Manual screen recording checklist: open local `replay.html`, verify GIF loop, font legibility, and 4-panel visibility; record ~70s keeping "selected case" and "display only" visible; verify audio, file size, and total duration. Label saved files accurately as `screen recording` or `simulator replay` (do not label the generated GIF an MP4 screen recording).
 
-失败回退：HTML关联失败→浏览器打开本地replay.html；GIF不播放→用step40静态图+episodes.csv；渲染失败→使用已生成的回放，数值检查仍可运行。现场不改阈值、幅值或seed。
+Fallbacks: if HTML fails to launch, open `replay.html` directly in a browser; if GIF fails to play, use `boundary_step40.png` + `episodes.csv`; if live rendering fails, use archived replays while numeric checks remain runnable. Never change thresholds, amplitudes, or seeds during a demo.

@@ -1,35 +1,33 @@
-# Five speakers / 12-minute presentation
+# Five-Speaker 12-Minute Presentation Plan
 
-已读取正式课程文件：上级目录DASE7508_Final_Project_Presentation_Instructions.pdf（2页）与project/DASE7508_Group_Project_Guidelines.pdf；只读全文提取及哈希在本轮验收目录。12分钟包含demo，之后另有3分钟Q&A，presentation占8/20分。需涵盖背景、动机、贡献、威胁模型、洞见、架构设计、评价、局限、未来工作、takeaways，并披露成员贡献和AI协助。新漏洞不是必要条件。
+Based on official course guidelines (`12 min` presentation including demo + `3 min` Q&A; `8/20` grade weight). Required elements: background, motivation, contributions, threat model, insights, architecture, evaluation, limitations, future work, takeaways, member credits, and AI disclosure.
 
-正文11分钟=660秒，五人各132秒；四次换人各10秒=40秒，余20秒缓冲，总计12分钟。A–E仅讲述角色，不代表实际作者。10页正文，完整条件表和credits放备份。实际语言速度需五人计时彩排，尚未验证。
+Body timing: `11 min = 660 s` (`132 s` per speaker across 5 speakers) + `4 x 10 s = 40 s` speaker transitions + `20 s` buffer = `12 min`. Speaker labels `A–E` denote presentation roles only, not authorship assignments. Ten main slides are used, with full condition tables and credits in backup slides. Actual pacing requires a timed five-person rehearsal.
 
-| 页 | 讲者 | 正文用时 | 核心信息与证据 |
+| Slide | Speaker | Body Time | Core Message & Evidence |
 |---|---|---|---|
-| 1 | A | 66s | 研究问题、动机、正常工作流 |
-| 2 | A | 66s | 系统和可信边界；位置/速度受保护是假设；已有架构图 |
-| 3 | B | 66s | bias/ramp/随机对照；区分已有工作和本次新增 |
-| 4 | B | 66s | 时机实验与弱效果；新图01/02 |
-| 5 | C | 66s | 残差、校准与预测；报警不等于归因 |
-| 6 | C | 66s | 原第21次与改进第22次中止；开发15/15平局选1；图05 |
-| 7 | D | 66s | 配对设计、90状态、成功判据、正式复现2250/2248 |
-| 8 | D | 66s | 图03/04；短攻击1080/1076/1080；持续73/90，延后20ms；正常89/8910与54/90 |
-| 9 | E | 75s | 固定历史案例四模式注释回放；同一seed802009，不代表平均效果 |
-| 10 | E | 57s | 局限、未来工作及评估计划、结论与AI/credits |
+| 1 | A | 66s | Research question, motivation, normal workflow |
+| 2 | A | 66s | System and trust boundaries; protected position/velocity assumptions; architecture diagram |
+| 3 | B | 66s | `bias`/`ramp`/random-sign controls; what was reused vs. newly added |
+| 4 | B | 66s | Timing experiment and weak terminal effects; Figures `01`/`02` |
+| 5 | C | 66s | Kinematic residual, calibration, and angle prediction; alarm != attribution |
+| 6 | C | 66s | Original 21-alarm abort vs. Wait+1 22-alarm abort; dev tie-break `15/15 -> 1`; Figure `05` |
+| 7 | D | 66s | Paired design, 90 states, success criteria, main reproduction (`2250/2248`) |
+| 8 | D | 66s | Figures `03`/`04`; short `1080/1076/1080`; sustained `73/90` (`+20 ms`); clean `89/8910` & `54/90` |
+| 9 | E | 75s | Selected historical boundary case 4-mode annotated replay (`seed 802009`, not average) |
+| 10 | E | 57s | Limitations, future evaluation plan, takeaways, AI & member credits |
 
-换人在页2、4、6、8后各10秒。正文目标不是逐字读满时间；SPEAKER_NOTES.md与页面一致，demo计入E的时间。Q&A另3分钟，见QA_PREP.md。
+Transitions occur after Slides 2, 4, 6, and 8 (`10 s` each). Slide timing aligns with [SPEAKER_NOTES.md](SPEAKER_NOTES.md) (demo included in Speaker E's time), followed by `3 min` Q&A ([QA_PREP.md](QA_PREP.md)).
 
-Rubric映射：动机/威胁模型1分→页1–2；洞见/贡献/设计2分→页3、5–6；评价证据2分→页4、7–9；清晰展示1分→可读图与控时；问答反思1.5分→页10及QA；贡献credits0.5分→页3、10与备份。这不是得分承诺。
+Rubric mapping: motivation/threat model (`1 pt` -> Slides 1–2); insights/contributions/design (`2 pts` -> Slides 3, 5–6); evaluation evidence (`2 pts` -> Slides 4, 7–9); clarity & pacing (`1 pt` -> readable figures & timing); Q&A/reflection (`1.5 pts` -> Slide 10 & Q&A); credits (`0.5 pts` -> Slides 3, 10 & Backup). Verify submission dates, speaking order, slide deadlines, and final report format on Moodle.
 
-待Moodle核实：日期、团队顺序、slide截止/格式及最终报告要求；正式PDF没有这些细节。本次不登录、不提交。
-
-| 工作 | 已确认来源 | 实际成员作者/审核证据 |
+| Work Component | Confirmed Source | Member Authorship / Review Evidence |
 |---|---|---|
-| MuJoCo、Gymnasium、SAC/SB3 | 上游组件与论文 | 不列为小组原创算法 |
-| 已有模型、攻击、原防御与main_v1 | 接手时已有项目成果及执行快照 | 待小组确认；Proposal拟分工不是实际贡献证明 |
-| Windows复现、时机实验、一步等待、审计与原交付材料 | 前轮会话新增，Codex协助 | 人工核验/整合成员待小组确认 |
-| 最终验收、注释demo、讲稿与本地共享包 | 本轮新增，Codex协助 | 各成员实际审核/彩排记录待填写 |
+| MuJoCo, Gymnasium, SAC/SB3 | Upstream libraries & papers | Not claimed as original algorithms |
+| Baseline models, attacks, original monitor, `main_v1` | Baseline group repo & execution snapshots | Confirm with group; Proposal roles are not proof of actual authorship |
+| Windows reproduction, timing study, Wait+1, audits | 2026-11-18 integration round (Codex-assisted) | Confirm manual review/integration members |
+| Acceptance recomputation, annotated demo, slide drafts | 2026-11-18 acceptance round (Codex-assisted) | Record each member's review & rehearsal sign-off |
 
-全部成员读FINAL_ACCEPTANCE和QA。A重点读威胁模型；B读攻击代码、FIGURE_GUIDE图01/02；C读security/recovery_monitor及图05；D读分母、截断和总代价表；E实际操作DEMO_GUIDE与静态备份。讲述分工不自动分配成果。
+Preparation reading: all members read [FINAL_ACCEPTANCE.md](FINAL_ACCEPTANCE.md) and [QA_PREP.md](QA_PREP.md). Speaker A focuses on threat model; B on attack code & Figures `01`/`02`; C on `security.py` / `recovery_monitor.py` & Figure `05`; D on denominators, truncation, & cost tables; E on [DEMO_GUIDE.md](DEMO_GUIDE.md) and static fallbacks.
 
-AI简述：Codex协助代码检查、环境排错、实验、证据验收、图表与演示稿草拟；小组须独立核验并解释结论，不编造作者、成功案例或新漏洞。正式slides需简短披露。
+AI disclosure statement for slides: Codex assisted with code inspection, environment troubleshooting, experiment execution, trace auditing, figure generation, and draft preparation; team members independently verify and explain all findings without fabricating authors, successful attacks, or unverified claims.
