@@ -7,6 +7,7 @@ from stable_baselines3 import SAC
 
 from reacher_env import make_env
 from security import ArmGeometry, Attack, KinematicMonitor
+from recovery_monitor import RecoveryMonitor
 
 
 def main():
@@ -23,7 +24,11 @@ def main():
     parser.add_argument('--duration', type=int, default=20)
     parser.add_argument('--monitor-threshold', type=float, help='Frozen calibrated threshold in metres; enables correction')
     parser.add_argument('--legacy-sampling', action='store_true')
+    parser.add_argument('--recovery-grace', type=int, choices=[1, 3],
+                        help='Exploratory recovery rule; use only the frozen selected grace')
     args = parser.parse_args()
+    if args.recovery_grace is not None and args.monitor_threshold is None:
+        parser.error('--recovery-grace requires --monitor-threshold')
     if not args.random and not args.model.is_file():
         parser.error(f'Model not found: {args.model}')
     policy = None if args.random else SAC.load(args.model, device='cpu')
@@ -33,7 +38,12 @@ def main():
     try:
         for episode in range(args.episodes):
             obs, _ = env.reset(seed=episode, options={'noise_seed': episode})
-            monitor = KinematicMonitor(geometry, args.monitor_threshold, env.unwrapped.dt) if args.monitor_threshold is not None else None
+            monitor = None
+            if args.monitor_threshold is not None:
+                monitor = (RecoveryMonitor(geometry, args.monitor_threshold, env.unwrapped.dt,
+                                           grace=args.recovery_grace)
+                           if args.recovery_grace is not None else
+                           KinematicMonitor(geometry, args.monitor_threshold, env.unwrapped.dt))
             for step in range(100):
                 started = time.perf_counter()
                 reported = attack.apply(obs, step)

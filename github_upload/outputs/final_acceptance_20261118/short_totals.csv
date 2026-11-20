@@ -1,0 +1,4 @@
+variant,episodes,successes,aborts
+grace1,1080,1080,0
+none,1080,1080,0
+original,1080,1076,4

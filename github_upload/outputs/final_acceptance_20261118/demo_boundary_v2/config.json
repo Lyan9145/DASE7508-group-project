@@ -1,0 +1,17 @@
+{
+  "scenario": "boundary",
+  "policy": "sac_seed_3_sync",
+  "seed": 802009,
+  "noise_seed": 10802009,
+  "start": 20,
+  "duration": 20,
+  "epsilon_rad": 0.1,
+  "sign": -1,
+  "threshold_m": 0.00607139711397308,
+  "dt_seconds": 0.02,
+  "model_sha256": "2ba35bea85ccbbfdb50d16cfa8257b2362329202c67fe6c716d58dc8b577616f",
+  "calibration_source": "C:\\Users\\76803\\Desktop\\course\\7508\\DASE7508-group-project-codex-sensor-spoofing-pilot\\github_upload\\outputs\\reproduction_20261118_compatible_main\\calibration.json",
+  "selected_case": "Known historical boundary failure; not representative of average effect",
+  "truth_usage": "Evaluator/display only; never supplied to model.predict or monitor.process",
+  "rendering": "Separate render environment after numeric trajectories are fixed; GIF is a slowed simulator replay, not desktop video"
+}

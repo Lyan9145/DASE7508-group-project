@@ -10,5 +10,7 @@ if (-not (Test-Path -LiteralPath '.venv\Scripts\python.exe')) {
 }
 uv --cache-dir .uv-cache pip install --python .venv\Scripts\python.exe -r requirements.lock.txt
 if ($LASTEXITCODE -ne 0) { throw 'Dependency installation failed' }
-& .\.venv\Scripts\python.exe check_setup.py
+$runId = [Guid]::NewGuid().ToString('N')
+$checkOutput = Join-Path 'outputs' "setup_windows_$runId"
+& .\.venv\Scripts\python.exe check_setup.py --out $checkOutput
 if ($LASTEXITCODE -ne 0) { throw 'Environment verification failed' }

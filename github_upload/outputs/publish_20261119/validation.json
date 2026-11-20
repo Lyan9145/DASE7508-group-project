@@ -1,0 +1,34 @@
+{
+  "branch": "sensor-spoofing-new",
+  "base_commit": "0a77ab1960418a3e75aae153f1089fa0b2f3c3b0",
+  "tests": "16 passed",
+  "numeric_modes": [
+    {
+      "mode": "normal",
+      "steps": 100,
+      "task_success": true,
+      "aborted": false
+    },
+    {
+      "mode": "attack",
+      "steps": 100,
+      "task_success": true,
+      "aborted": false
+    },
+    {
+      "mode": "original",
+      "steps": 40,
+      "task_success": false,
+      "aborted": true
+    },
+    {
+      "mode": "improved",
+      "steps": 100,
+      "task_success": true,
+      "aborted": false
+    }
+  ],
+  "validation_scope": "Same-machine check of isolated publish checkout; not independent-machine reproduction",
+  "source_model_snapshots": "Staged blob SHA256 checks passed; original models and historical outputs unchanged",
+  "excluded": "Local environment/cache, course PDFs, new full traces, generated distribution ZIP"
+}

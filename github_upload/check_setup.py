@@ -1,5 +1,6 @@
 """Check installed physics, observation semantics, geometry, rendering and SB3."""
 import importlib.metadata
+import argparse
 import json
 import platform
 import time
@@ -16,8 +17,12 @@ from reacher_env import make_env
 
 
 def main():
-    out = Path('outputs')
-    out.mkdir(exist_ok=True)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--out', type=Path, required=True)
+    parser.add_argument('--no-render', action='store_true')
+    args = parser.parse_args()
+    out = args.out
+    out.mkdir(parents=True, exist_ok=False)
     env = gym.make('Reacher-v5', max_episode_steps=100, render_mode='rgb_array')
     obs, _ = env.reset(seed=42)
     env.action_space.seed(42)
@@ -58,9 +63,11 @@ def main():
         assert np.isfinite(obs).all() and np.isfinite(reward)
         assert not terminated and truncated == (step == 99)
     elapsed = time.perf_counter() - started
-    frame = env.render()
-    assert frame.ndim == 3 and frame.shape[2] == 3
-    Image.fromarray(frame).save(out / 'reacher_preview.png')
+    frame = None
+    if not args.no_render:
+        frame = env.render()
+        assert frame.ndim == 3 and frame.shape[2] == 3
+        Image.fromarray(frame).save(out / 'reacher_preview.png')
     report = {'python': platform.python_version(), 'platform': platform.platform(),
               'packages': {p: importlib.metadata.version(p) for p in
                            ['mujoco', 'gymnasium', 'stable-baselines3', 'torch', 'numpy']},
@@ -72,7 +79,7 @@ def main():
               'fingertip_offset_xy': offset.tolist(), 'max_fk_error_m': max_error,
               'max_raw_body_position_lag_m': max_reported_position_lag,
               'checked_steps_per_second': 100 / elapsed,
-              'render_shape': list(frame.shape)}
+              'render_shape': list(frame.shape) if frame is not None else None}
     env.close()
     noisy = make_env(42)
     check_env(noisy, warn=True)

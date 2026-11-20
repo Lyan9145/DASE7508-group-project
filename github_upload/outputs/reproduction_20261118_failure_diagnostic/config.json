@@ -1,0 +1,23 @@
+{
+  "provenance": "Post-run metadata reconstructed from recorded executed command and unchanged diagnostic source; not a new preregistration",
+  "model": "outputs/sac_seed_3_sync/model.zip",
+  "model_sha256": "2ba35bea85ccbbfdb50d16cfa8257b2362329202c67fe6c716d58dc8b577616f",
+  "threshold_source": "outputs/main_v1/calibration.json",
+  "executed_torch": "2.7.1+cu126",
+  "device": "cpu",
+  "seed": 802009,
+  "noise_seed": 10802009,
+  "attack_random_seed": 20802009,
+  "sign": -1,
+  "start": 20,
+  "duration": 20,
+  "epsilon": 0.1,
+  "selected_grace": 1,
+  "source_sha256": {
+    "reproduce_failure.py": "1a2da9411f6c6fafb2448f3e1ef4f5f7c7ccdacbd8c9f8e5eefb8fc14fdf1d78",
+    "evaluate.py": "60341da53d2957aa34a5f2eb1998d20771f7758c28f29f26b6b22f8a072ab2e2",
+    "reacher_env.py": "170ce9e876e9040650cdee863726d7182201e13f6f9b1b95c6d45f1072647745",
+    "security.py": "00f8204a3da7f6ff76346ca64dff4f0313b271702c6c4f9f5061ed10afa81cb8",
+    "recovery_monitor.py": "5088e28359d2228f6c3b9855cd62e127f61e8f0baefe87b3b3b2e0ee2942be67"
+  }
+}

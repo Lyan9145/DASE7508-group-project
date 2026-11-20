@@ -1,0 +1,9 @@
+metric,unequal,max_abs_difference
+task_success,0,0.0
+aborted,0,0.0
+steps,0,0.0
+alarm_count,0,0.0
+final_10_mean_distance_m,97,1.0061396160665481e-16
+terminal_distance_m,140,1.0061396160665481e-16
+window_mean_distance_m,72,1.0061396160665481e-16
+control_effort,0,0.0

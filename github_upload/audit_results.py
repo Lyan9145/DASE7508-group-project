@@ -10,7 +10,7 @@ from pathlib import Path
 import numpy as np
 
 
-def audit(run):
+def audit(run, output=None):
     config = json.loads((run / 'config.json').read_text())
     status = json.loads((run / 'run_status.json').read_text())
     calibration = json.loads((run / 'calibration.json').read_text())
@@ -104,11 +104,15 @@ def audit(run):
                          'attack window and amplitude','paired attack schedules',
                          'previous-velocity correction','paired initial states and noise','abort boundary','independent task scoring',
                          'control effort']}
-    (run / 'audit.json').write_text(json.dumps(result,indent=2))
+    destination = output or run / 'audit.json'
+    with destination.open('x', encoding='utf-8') as file:
+        file.write(json.dumps(result, indent=2))
     return result
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('run',type=Path)
-    print(json.dumps(audit(parser.parse_args().run),indent=2))
+    parser.add_argument('--output', type=Path, help='New audit file; never overwrite historical audit')
+    args = parser.parse_args()
+    print(json.dumps(audit(args.run, args.output),indent=2))

@@ -1,0 +1,12 @@
+{
+  "unit": "all 12 short-attack settings successful for same initial state",
+  "states": 90,
+  "original": 86,
+  "improved": 90,
+  "paired_difference": 0.044444444444444446,
+  "ci95": [
+    0.011111111111111112,
+    0.08888888888888889
+  ],
+  "resampling": "5000 paired-state samples stratified within three fixed policies"
+}

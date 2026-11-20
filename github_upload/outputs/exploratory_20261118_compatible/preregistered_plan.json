@@ -1,0 +1,13 @@
+{
+  "frozen_before_development": true,
+  "candidates": [
+    1,
+    3
+  ],
+  "calibration_seeds": "900000+p*1000+[0,99]",
+  "development_seeds": "910000+p*1000+[0,5]",
+  "test_seeds": "930000+p*1000+[0,29]",
+  "rule": "21st alarm enters recovery_pending; clear resets; sustained alarm aborts at 21+grace",
+  "selection": "fewest development aborts; ties choose smallest grace",
+  "trust": "identical protected position and velocity channels; truth for evaluation only"
+}

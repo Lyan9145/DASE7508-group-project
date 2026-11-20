@@ -6,3 +6,21 @@ __pycache__/
 github_upload/outputs/*/tensorboard/
 github_upload/outputs/*/train.monitor.csv
 *.log
+
+# Local publishing, package extraction and test/cache artifacts
+.publish-*/
+deliverables/
+**/pytest-cache-files-*/
+**/pytest_tmp*/
+**/pytest_*tmp*/
+**/package_pytest_tmp/
+**/team_package_smoke/
+**/team_package_numeric/
+**/documents_before/
+.vscode/
+.env
+.env.*
+*.pem
+*.key
+# New full traces remain local; already-tracked historical traces remain in Git.
+github_upload/outputs/**/traces.jsonl.gz
