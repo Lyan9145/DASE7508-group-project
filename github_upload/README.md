@@ -18,7 +18,7 @@ conda activate dase7508
 python -m pip install 'torch==2.14.1' --index-url https://download.pytorch.org/whl/cpu
 python -m pip install -r requirements.lock.txt
 python -m pip install -r requirements-dev.txt
-python -m pytest -q
+python -m pytest -q test_security.py test_exploration.py
 MUJOCO_GL=egl python check_setup.py --out outputs/reproduction_setup_linux_new_001
 ```
 
