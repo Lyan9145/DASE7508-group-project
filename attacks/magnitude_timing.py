@@ -45,8 +45,8 @@ class SinusoidalAttack(BaseAttack):
         epsilon: float = 0.5,
         duration: int = 20,
         start: int = 80,
-        freq_hz: float = 5.0,
-        phase: float = 0.0,
+        freq_hz: float = 0.25,
+        phase: float = float(np.pi / 2.0),
         sign: int = 1,
     ) -> None:
         resolved_epsilon = _validate_nonneg_finite(epsilon, "epsilon")

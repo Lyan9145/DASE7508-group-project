@@ -90,13 +90,37 @@ class ThresholdAwareRampAttack(BaseAttack):
                 raise ValueError("calibrated_threshold_m must be finite and nonnegative")
 
             q0, q1 = np.arctan2(raw[2:4], raw[:2])
-            tip = context.geometry.forward(float(q0), float(q1))
-            r = float(np.linalg.norm(tip - context.geometry.origin))
-            delta_max = 2.0 * float(
-                np.arcsin(np.clip((self.margin * thresh) / max(2.0 * r, 1e-6), 0.0, 1.0))
-            )
+            # Use the reported position channel, including its noise. A bound
+            # derived from the ideal tip position can exceed the detector's
+            # actual residual budget on a noisy observation.
+            residual_budget = self.margin * thresh
+            baseline_residual = float(context.geometry.residual(raw))
             ramp_mag = self.epsilon * ((step_idx - self.start + 1) / self.duration)
-            mag = min(ramp_mag, delta_max)
+            q0_base = float(q0)
+
+            def residual_at(magnitude: float) -> float:
+                tip = context.geometry.forward(q0_base + self._sign * magnitude, float(q1))
+                measured_tip = raw[4:6] + raw[8:10]
+                return float(np.linalg.norm(tip - measured_tip))
+
+            # Zero is the only safe choice when clean measurement noise has
+            # already spent the budget. For a feasible zero, the first exit
+            # from the residual ball along either rotation direction is unique
+            # within pi radians, so bisection finds the largest allowed delta.
+            mag = 0.0
+            if baseline_residual < residual_budget and ramp_mag > 0.0:
+                upper = min(float(ramp_mag), float(np.pi))
+                if residual_at(upper) <= residual_budget:
+                    mag = upper
+                else:
+                    lo, hi = 0.0, upper
+                    for _ in range(32):
+                        mid = (lo + hi) / 2.0
+                        if residual_at(mid) <= residual_budget:
+                            lo = mid
+                        else:
+                            hi = mid
+                    mag = lo
             delta = float(self._sign * mag)
             if delta != 0.0:
                 q0_adv = float(q0) + delta
@@ -104,8 +128,9 @@ class ThresholdAwareRampAttack(BaseAttack):
                 reported[2] = float(np.sin(q0_adv))
             metadata = {
                 "threshold_m": thresh,
-                "radius_m": r,
-                "delta_max_rad": delta_max,
+                "baseline_residual_m": baseline_residual,
+                "residual_budget_m": residual_budget,
+                "delta_max_rad": mag,
             }
 
         return AttackResult(

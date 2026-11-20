@@ -9,7 +9,7 @@ from .base import AttackContext, AttackResult, BaseAttack, register_attack
 
 @register_attack("policy_gradient")
 class PolicyGradientAttack(BaseAttack):
-    """Projected gradient ascent maximizing action divergence on joint-0 angle."""
+    """Multi-start projected ascent on action divergence, with optional residual penalty."""
 
     def __init__(
         self,
@@ -17,6 +17,8 @@ class PolicyGradientAttack(BaseAttack):
         duration: int = 20,
         start: int = 80,
         n_steps: int = 5,
+        n_restarts: int = 3,
+        residual_weight: float = 0.0,
         sign: int = 1,
     ) -> None:
         resolved_epsilon = float(epsilon)
@@ -25,28 +27,37 @@ class PolicyGradientAttack(BaseAttack):
         resolved_duration = int(duration)
         resolved_start = int(start)
         resolved_n_steps = int(n_steps)
+        resolved_n_restarts = int(n_restarts)
+        resolved_residual_weight = float(residual_weight)
         resolved_sign = int(sign)
         if (
             resolved_duration < 1
             or resolved_start < 1
             or resolved_n_steps < 1
+            or resolved_n_restarts < 1
             or resolved_sign not in (-1, 1)
         ):
             raise ValueError(
-                "duration >= 1, start >= 1, n_steps >= 1, and sign in {-1, 1} are required"
+                "duration >= 1, start >= 1, n_steps >= 1, n_restarts >= 1, and sign in {-1, 1} are required"
             )
+        if not np.isfinite(resolved_residual_weight) or resolved_residual_weight < 0.0:
+            raise ValueError("residual_weight must be finite and nonnegative")
 
         super().__init__(
             epsilon=resolved_epsilon,
             duration=resolved_duration,
             start=resolved_start,
             n_steps=resolved_n_steps,
+            n_restarts=resolved_n_restarts,
+            residual_weight=resolved_residual_weight,
             sign=resolved_sign,
         )
         self.epsilon: float = resolved_epsilon
         self.duration: int = resolved_duration
         self.start: int = resolved_start
         self.n_steps: int = resolved_n_steps
+        self.n_restarts: int = resolved_n_restarts
+        self.residual_weight: float = resolved_residual_weight
         self._sign: int = resolved_sign
 
     def reset(
@@ -85,13 +96,6 @@ class PolicyGradientAttack(BaseAttack):
         if actor is None:
             raise ValueError("PolicyGradientAttack requires context.policy with an actor")
 
-        init_delta = float(
-            np.clip(
-                float(self._sign) * min(0.05, 0.25 * self.epsilon),
-                -self.epsilon,
-                self.epsilon,
-            )
-        )
         step_size = self.epsilon / max(self.n_steps, 1) * 1.5
         was_training = actor.training
         prev_req_grads = [param.requires_grad for param in actor.parameters()]
@@ -111,34 +115,83 @@ class PolicyGradientAttack(BaseAttack):
                 q0_base = torch.tensor(
                     float(np.arctan2(raw[2], raw[0])), dtype=dtype, device=device
                 )
-                delta = torch.tensor(
-                    init_delta, dtype=dtype, device=device, requires_grad=True
+                q1_base = torch.tensor(
+                    float(np.arctan2(raw[3], raw[1])), dtype=dtype, device=device
                 )
+                measured_tip = torch.as_tensor(
+                    raw[4:6] + raw[8:10], dtype=dtype, device=device
+                )
+                geometry = context.geometry
+                origin = torch.as_tensor(geometry.origin, dtype=dtype, device=device)
+                link = torch.as_tensor(geometry.link, dtype=dtype, device=device)
+                tip = torch.as_tensor(geometry.tip, dtype=dtype, device=device)
+                threshold = (
+                    0.006 if context.calibrated_threshold_m is None
+                    else float(context.calibrated_threshold_m)
+                )
+                if not np.isfinite(threshold) or threshold < 0.0:
+                    raise ValueError("calibrated_threshold_m must be finite and nonnegative")
+                budget = threshold * 0.85
 
-                for _ in range(self.n_steps):
+                def score(delta: torch.Tensor) -> torch.Tensor:
                     adv_obs = base_obs.clone()
                     adv_obs[:, 0] = torch.cos(q0_base + delta)
                     adv_obs[:, 2] = torch.sin(q0_base + delta)
                     adv_action = actor(adv_obs, deterministic=True)
-                    loss = ((adv_action - target_action) ** 2).sum()
-                    (grad,) = torch.autograd.grad(loss, delta)
-                    with torch.no_grad():
-                        grad_val = float(grad.item()) if torch.isfinite(grad) else 0.0
-                        grad_sign = (
-                            1.0 if grad_val > 0.0 else (-1.0 if grad_val < 0.0 else 0.0)
-                        )
-                        next_delta = float(
-                            np.clip(
-                                float(delta.item()) + step_size * grad_sign,
-                                -self.epsilon,
-                                self.epsilon,
+                    value = ((adv_action - target_action) ** 2).sum()
+                    if self.residual_weight:
+                        a0, a1 = q0_base + delta, q0_base + delta + q1_base
+                        predicted_tip = origin + torch.stack(
+                            (
+                                torch.cos(a0) * link[0] - torch.sin(a0) * link[1]
+                                + torch.cos(a1) * tip[0] - torch.sin(a1) * tip[1],
+                                torch.sin(a0) * link[0] + torch.cos(a0) * link[1]
+                                + torch.sin(a1) * tip[0] + torch.cos(a1) * tip[1],
                             )
                         )
-                        delta = torch.tensor(
-                            next_delta, dtype=dtype, device=device, requires_grad=True
+                        excess = torch.relu(
+                            torch.linalg.vector_norm(predicted_tip - measured_tip) - budget
                         )
+                        value = value - self.residual_weight * (excess / max(budget, 1e-6)) ** 2
+                    return value
 
-                final_delta = float(delta.item())
+                small = min(0.05, 0.25 * self.epsilon)
+                initial = [
+                    self._sign * small,
+                    -self._sign * self.epsilon,
+                    self._sign * self.epsilon,
+                ]
+                if self.n_restarts > 3:
+                    initial.extend(
+                        np.linspace(-self.epsilon, self.epsilon, self.n_restarts - 1)[1:-1]
+                    )
+                best_score = -float("inf")
+                final_delta = 0.0
+                for start_delta in initial[:self.n_restarts]:
+                    delta = torch.tensor(
+                        float(start_delta), dtype=dtype, device=device, requires_grad=True
+                    )
+                    for iteration in range(self.n_steps + 1):
+                        value = score(delta)
+                        candidate = float(value.detach().item())
+                        if np.isfinite(candidate) and candidate > best_score:
+                            best_score = candidate
+                            final_delta = float(delta.detach().item())
+                        if iteration == self.n_steps:
+                            break
+                        (grad,) = torch.autograd.grad(value, delta)
+                        with torch.no_grad():
+                            grad_val = float(grad.item()) if torch.isfinite(grad) else 0.0
+                            next_delta = float(
+                                np.clip(
+                                    float(delta.item()) + step_size * np.sign(grad_val),
+                                    -self.epsilon,
+                                    self.epsilon,
+                                )
+                            )
+                            delta = torch.tensor(
+                                next_delta, dtype=dtype, device=device, requires_grad=True
+                            )
         finally:
             for param, prev_grad in zip(actor.parameters(), prev_req_grads):
                 param.requires_grad_(prev_grad)
@@ -154,9 +207,9 @@ class PolicyGradientAttack(BaseAttack):
             is_active=True,
             attacked_channels=(0, 2),
             delta_rad=final_delta,
-            metadata={"n_steps": self.n_steps, "init_delta_rad": init_delta},
+            metadata={
+                "n_steps": self.n_steps,
+                "n_restarts": self.n_restarts,
+                "residual_weight": self.residual_weight,
+            },
         )
-
-
-# TODO (Teammate Task 1): Extend PGD with multi-channel perturbations (joint1 + velocity),
-# bidirectional sign restarts, and Lagrangian residual penalties for defense evasion.
