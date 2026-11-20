@@ -1,5 +1,0 @@
-policy,seed,case,attack_kind,epsilon_rad,attack_start,duration,steps
-sac_seed_1_sync,930016,bias_e0.1_s70,bias,0.1,70,20,89
-sac_seed_2_sync,931009,bias_e0.1_s20,bias,0.1,20,20,39
-sac_seed_2_sync,931011,bias_e0.1_s70,bias,0.1,70,20,90
-sac_seed_2_sync,931023,bias_e0.1_s20,bias,0.1,20,20,39

@@ -3,8 +3,11 @@ __pycache__/
 .venv/
 .uv-cache/
 .pytest_cache/
-github_upload/outputs/*/tensorboard/
-github_upload/outputs/*/train.monitor.csv
+outputs/*/tensorboard/
+outputs/**/tensorboard/
+outputs/*/train.monitor.csv
+models/**/tensorboard/
+models/*/train.monitor.csv
 *.log
 
 # Local publishing, package extraction and test/cache artifacts
@@ -23,7 +26,7 @@ deliverables/
 *.pem
 *.key
 # New full traces remain local; already-tracked historical traces remain in Git.
-github_upload/outputs/**/traces.jsonl.gz
+outputs/**/traces.jsonl.gz
 
 # OS, editor, and temporary scratch files
 .DS_Store
@@ -34,9 +37,8 @@ Thumbs.db
 *~
 
 # Local Phase-2 scratch, review, dev, and smoke run outputs
-github_upload/outputs/**/tensorboard/
-github_upload/outputs/review_*/
-github_upload/outputs/smoke_*/
-github_upload/outputs/dev_*/
-github_upload/outputs/check_setup_*/
-github_upload/outputs/phase2_*_smoke*/
+outputs/review_*/
+outputs/smoke_*/
+outputs/dev_*/
+outputs/check_setup_*/
+outputs/phase2_*_smoke*/

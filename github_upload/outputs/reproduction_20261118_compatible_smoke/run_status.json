@@ -1,7 +1,0 @@
-{
-  "complete": true,
-  "phase": "pilot",
-  "evaluation_episodes": 20,
-  "calibration_episodes": 100,
-  "elapsed_seconds": 9.973236999940127
-}
