@@ -9,6 +9,7 @@ reinforcement-learning robotic arm.
 - [Integration work log](WORK_LOG.md)
 - [Proposal](DASE7508_Proposal_2.0.md)
 - [Installation, training and experiment commands](github_upload/README.md)
+- [Apple Silicon macOS reproduction](MACOS_REPRODUCTION.md)
 - [Experiment protocol and metric definitions](github_upload/PROTOCOL.md)
 
 Executable code and outputs are in `github_upload/`. Run commands there.
