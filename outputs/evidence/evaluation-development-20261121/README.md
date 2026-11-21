@@ -25,8 +25,8 @@ calibration data, traces, and replay remain local.
 | `models/sac_seed_1_sync/model.zip` | `7f2b85e22601fd847793710991d245f8b6975ef935fa5a2e0592ca83f219bc24` |
 | `models/sac_seed_1_robust/model.zip` (matrix fallback) | `1a2cc2dba8d1487c8e0b6ccaf1653968cd9b79c6053b290af681e46b90513c3b` |
 
-See the [preliminary report](../../EVALUATION_PRELIMINARY.md) for interpretation
-and the [run manifest](../../EVALUATION_RUN_MANIFEST.md) for the pending freeze
+See the [preliminary report](../../../docs/EVALUATION_PRELIMINARY.md) for interpretation
+and the [run manifest](../../../docs/EVALUATION_RUN_MANIFEST.md) for the pending freeze
 decisions. The snapshot contains summary evidence. The result checker requires
 the original episode logs.
 

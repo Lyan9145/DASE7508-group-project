@@ -4,6 +4,9 @@
 defense settings, and held-out results are pending. The official matrix seed
 block beginning at 1200000 remains unused.
 
+See the [development evidence bundle](../outputs/evidence/evaluation-development-20261121/README.md)
+for the summary tables, run configs, and figures.
+
 ## What is ready
 
 - The smoke report, ablation plots, result checker, and full-size layout check
