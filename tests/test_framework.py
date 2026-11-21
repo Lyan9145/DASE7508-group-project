@@ -290,6 +290,7 @@ EXPECTED_ATTACKS = [
     "freeze",
     "joint_vel_coupled",
     "policy_gradient",
+    "pulse",
     "ramp",
     "random_bias",
     "random_ramp",

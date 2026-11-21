@@ -28,10 +28,10 @@ The flat root layout places the 6 active CLI entry points alongside top-level pa
 │   ├── kinematics.py                     # solve_q0_ik, solve_2link_ik, elbow_flip_angles
 │   └── env_wrapper.py                    # AblationNoiseWrapper, make_ablation_env
 ├── attacks/
-│   ├── __init__.py                       # Auto-imports & exposes all 12 registered attacks
+│   ├── __init__.py                       # Auto-imports & exposes all 13 registered attacks
 │   ├── base.py                           # AttackContext, AttackResult, BaseAttack, @register_attack
 │   ├── legacy.py                         # CleanAttack, BiasAttack, RampAttack, RandomBiasAttack, RandomRampAttack
-│   ├── magnitude_timing.py               # SinusoidalAttack, FreezeAttack, ReplayAttack
+│   ├── magnitude_timing.py               # SinusoidalAttack, FreezeAttack, ReplayAttack, PulseAttack
 │   ├── stealthy.py                       # ThresholdAwareRampAttack, ElbowFlipAttack, JointVelocityCoupledAttack
 │   └── adaptive.py                       # PolicyGradientAttack (white-box PGD on SAC actor)
 ├── defenses/
@@ -122,9 +122,9 @@ Trust-boundary rules:
 
 ### 2.4 Built-In Registered Plugins
 
-- **Attacks (12 total via `attacks.list_attacks()`)**:
+- **Attacks (13 total via `attacks.list_attacks()`)**:
   - Legacy baseline: `clean`, `bias`, `ramp`, `random_bias`, `random_ramp`
-  - Magnitude/timing: `sinusoidal`, `freeze`, `replay`
+  - Magnitude/timing: `sinusoidal`, `freeze`, `replay`, `pulse` (periodic on/off spoofing)
   - Stealthy/multi-channel: `threshold_aware`, `elbow_flip` (modifies `(0, 1, 2, 3)` with zero FK residual), `joint_vel_coupled` (modifies `(0, 2, 6)`)
   - White-box adaptive: `policy_gradient` (PGD against frozen SAC actor)
 - **Defenses (8 total via `defenses.list_defenses()`)**:

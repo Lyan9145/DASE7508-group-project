@@ -6,7 +6,7 @@ from pathlib import Path
 
 from stable_baselines3 import SAC
 
-from attacks import AttackContext, PolicyGradientAttack, ThresholdAwareRampAttack
+from attacks import AttackContext, PolicyGradientAttack, PulseAttack, ThresholdAwareRampAttack
 from core.reacher_env import make_env
 from core.security import ArmGeometry
 
@@ -67,3 +67,18 @@ def test_policy_gradient_residual_penalty_preserves_actor() -> None:
             assert np.array_equal(current.detach().numpy(), original.numpy())
     finally:
         env.close()
+
+
+def test_pulse_resets_observation_between_bursts() -> None:
+    raw = np.array([1.0, 1.0, 0.0, 0.0, 0.1, 0.1, 0.0, 0.0, 0.1, 0.1])
+    attack = PulseAttack(epsilon=0.5, start=10, duration=8, on_steps=3, off_steps=1)
+    attack.reset(seed=1100000, sign=-1)
+    for step in range(10, 18):
+        result = attack.apply(raw, step, context=None)
+        assert result.is_active
+        if (step - 10) % 4 == 3:
+            np.testing.assert_array_equal(result.reported_obs, raw)
+            assert result.delta_rad == 0.0
+        else:
+            assert result.delta_rad == -0.5
+            np.testing.assert_array_equal(result.reported_obs[[1, 3, 4, 5, 6, 7, 8, 9]], raw[[1, 3, 4, 5, 6, 7, 8, 9]])
