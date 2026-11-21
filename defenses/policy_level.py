@@ -63,17 +63,25 @@ class FallbackPolicyDefense(BaseDefense):
     episode.
 
     The intended fallback is a policy trained by ``train_fallback.py`` with the
-    joint-0 encoder and velocity masked inside the network
+    joint-0 encoder masked inside the network
     (``MaskedObservationExtractor``), e.g. ``models/sac_seed_1_robust``: once
     the main policy's view of joint 0 is no longer trusted, control passes to a
     policy that cannot be steered through that channel at all.
+
+    Defaults ``base_defense="ik_velocity_fusion"`` and ``switch_streak=10``
+    were chosen on the development block (``defenses/DEV_RESULTS.md``): the
+    IK-fusion base also triggers on elbow flips and velocity tampering, which
+    the former ``continuous_velocity`` base never saw (mean attack-case
+    success 0.97 vs 0.76-0.79 with ``sac_seed_1_robust`` or an unmasked
+    fallback), and a longer streak keeps the main policy in control unless an
+    alarm is sustained. ``latch`` never helped.
     """
 
     def __init__(
         self,
-        switch_streak: int = 5,
+        switch_streak: int = 10,
         fallback_model_path: str | Path | None = None,
-        base_defense: str = "continuous_velocity",
+        base_defense: str = "ik_velocity_fusion",
         latch: bool = False,
     ) -> None:
         self.switch_streak = int(switch_streak)

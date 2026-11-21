@@ -2,14 +2,16 @@
 
 The policy network zeroes the listed observation channels inside its features
 extractor (``defenses.policy_level.MaskedObservationExtractor``), so it never
-depends on them. The default masks the joint-0 encoder ``(cos q0, sin q0)`` and
-joint-0 velocity (indices ``0 2 6``): joint 0 is then inferred from the
-independent fingertip-position channel and joint 1, so spoofing joint 0 cannot
-change the fallback's actions. The saved ``model.zip`` takes the normal
-10-dimensional observation and is passed to ``run_matrix.py --fallback-model``.
+depends on them. The default masks the joint-0 encoder ``(cos q0, sin q0)``
+(indices ``0 2``): joint 0 is then implied by the independent fingertip-position
+channel and joint 1, so spoofing the joint-0 encoder cannot change the
+fallback's actions. Also masking joint-0 velocity (``0 2 6``) was tried and
+rejected: without it the policy cannot damp joint 0 and settled in only 4/30
+validation episodes. The saved ``model.zip`` takes the normal 10-dimensional
+observation and is passed to ``run_matrix.py --fallback-model``.
 
-Example (about 20 minutes on one CPU core):
-    python train_fallback.py --seed 1 --steps 150000 --out models/sac_seed_1_robust
+Example (77-101 minutes per seed on one CPU thread of a shared server in the dev runs):
+    python train_fallback.py --seed 1 --steps 150000 --out outputs/fallback_seed_1_001
 """
 import argparse
 import hashlib
@@ -62,14 +64,14 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument('--steps', type=int, default=150000)
     parser.add_argument('--seed', type=int, default=1)
-    parser.add_argument('--mask-indices', type=int, nargs='+', default=[0, 2, 6],
-                        help='Observation indices hidden from the policy (default: 0 2 6)')
+    parser.add_argument('--mask-indices', type=int, nargs='+', default=[0, 2],
+                        help='Observation indices hidden from the policy (default: 0 2)')
     parser.add_argument('--device', default='cpu')
     parser.add_argument('--eval-episodes', type=int, default=30)
     parser.add_argument('--out', type=Path, required=True,
                         help='New output directory; existing results are never overwritten')
     parser.add_argument('--legacy-sampling', action='store_true')
-    parser.add_argument('--max-seconds', type=float, default=3600,
+    parser.add_argument('--max-seconds', type=float, default=10800,
                         help='Wall-clock cap for training; partial models are validated too')
     args = parser.parse_args()
     if args.steps < 1 or args.eval_episodes < 1 or args.seed < 0 or args.max_seconds <= 0:
