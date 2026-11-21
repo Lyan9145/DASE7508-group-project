@@ -6,7 +6,7 @@ This guide documents the unified plugin architecture at the repository root (`co
 
 ## 1. Directory Layout and Baseline Isolation
 
-The flat root layout places the 6 active CLI entry points alongside top-level packages, `models/`, `tests/`, `docs/`, `env/`, `legacy/`, and `outputs/`:
+The flat root layout places the 7 active CLI entry points alongside top-level packages, `models/`, `tests/`, `docs/`, `env/`, `legacy/`, and `outputs/`:
 
 ```text
 .
@@ -15,6 +15,7 @@ The flat root layout places the 6 active CLI entry points alongside top-level pa
 ├── requirements.txt                      # Pinned base runtime lockfile
 ├── check_setup.py                        # Environment, kinematics, and rendering verification
 ├── train.py                              # SAC policy training and 30-episode clean validation
+├── train_fallback.py                     # Masked-observation SAC fallback policy for fallback_policy
 ├── demo.py                               # Interactive visualization for any registered attack/defense
 ├── run_matrix.py                         # Phase-2 paired Attack x Defense matrix evaluation CLI
 ├── run_ablation.py                       # Direction 4A velocity/position noise ablation CLI
@@ -39,8 +40,9 @@ The flat root layout places the 6 active CLI entry points alongside top-level pa
 │   ├── base.py                           # CalibrationStats, DefenseContext, DefenseResult, BaseDefense, @register_defense
 │   ├── legacy.py                         # NoDefense, OriginalFailStopDefense, Grace1Defense
 │   ├── statistical.py                    # CusumDefense, SlidingWindowDefense
-│   ├── fusion_recovery.py                # ContinuousVelocityDefense, IKVelocityFusionDefense
-│   └── policy_level.py                   # FallbackPolicyDefense
+│   ├── fusion_recovery.py                # ContinuousVelocityDefense, IKVelocityFusionDefense, VelocityConsistencyMonitor
+│   ├── policy_level.py                   # FallbackPolicyDefense, MaskedObservationExtractor
+│   └── DEV_RESULTS.md                    # Track 2 development-set tuning results
 ├── evaluation/
 │   ├── __init__.py                       # Re-exports metrics, presets, runner, ablation, visualize
 │   ├── metrics.py                        # recovery_time, summarize_matrix, aggregate_across_policies, collect_seed_set
@@ -52,9 +54,11 @@ The flat root layout places the 6 active CLI entry points alongside top-level pa
 ├── models/
 │   ├── sac_seed_1_sync/model.zip         # Synchronized SAC baseline policy (seed 1)
 │   ├── sac_seed_2_sync/model.zip         # Synchronized SAC baseline policy (seed 2)
-│   └── sac_seed_3_sync/model.zip         # Synchronized SAC baseline policy (seed 3)
+│   ├── sac_seed_3_sync/model.zip         # Synchronized SAC baseline policy (seed 3)
+│   └── sac_seed_1_robust/model.zip       # Fallback SAC policy with the joint-0 encoder masked
 ├── tests/
-│   └── test_framework.py                 # Unified verification suite (kinematics, contracts, parity, CLIs)
+│   ├── test_framework.py                 # Unified verification suite (kinematics, contracts, parity, CLIs)
+│   └── test_defense_extensions.py        # Track 2 defense regression checks
 ├── docs/
 │   ├── DASE7508_Proposal_2.0.md          # Phase-1/2 proposal document
 │   ├── PROTOCOL.md                       # Frozen Phase-1 protocol and metric definitions
@@ -68,7 +72,7 @@ The flat root layout places the 6 active CLI entry points alongside top-level pa
 
 Core repository paths tracked in this layout:
 - Root docs & setup: `README.md`, `FRAMEWORK_GUIDE.md`, `requirements.txt`, `docs/PROTOCOL.md`, `docs/ANALYSIS_NOTES.md`, `legacy/README.md`, `tests/test_framework.py`
-- Root CLIs: `check_setup.py`, `train.py`, `demo.py`, `run_matrix.py`, `run_ablation.py`, `plot_matrix.py`
+- Root CLIs: `check_setup.py`, `train.py`, `train_fallback.py`, `demo.py`, `run_matrix.py`, `run_ablation.py`, `plot_matrix.py`
 - Core package: `core/__init__.py`, `core/kinematics.py`, `core/env_wrapper.py`, `core/reacher_env.py`, `core/security.py`, `core/recovery_monitor.py`
 - Attacks package: `attacks/__init__.py`, `attacks/base.py`, `attacks/legacy.py`, `attacks/magnitude_timing.py`, `attacks/stealthy.py`, `attacks/adaptive.py`
 - Defenses package: `defenses/__init__.py`, `defenses/base.py`, `defenses/legacy.py`, `defenses/statistical.py`, `defenses/fusion_recovery.py`, `defenses/policy_level.py`
@@ -130,8 +134,8 @@ Trust-boundary rules:
 - **Defenses (8 total via `defenses.list_defenses()`)**:
   - Legacy baseline: `no_defense`, `original_fail_stop`, `grace1`
   - Statistical: `cusum`, `sliding_window`
-  - Fusion/recovery: `continuous_velocity`, `ik_velocity_fusion` (position residual + joint jump check + single/dual-link IK-velocity fusion)
-  - Policy-level: `fallback_policy`
+  - Fusion/recovery: `continuous_velocity`, `ik_velocity_fusion` (position residual + joint jump check + encoder/velocity consistency gate + single/dual-link IK-velocity fusion)
+  - Policy-level: `fallback_policy` (pair with `--fallback-model models/sac_seed_1_robust/model.zip`)
 - **Matrix Presets (`evaluation.list_presets()`)**: `smoke`, `late_strong`, `full_matrix`.
 
 ---
@@ -167,6 +171,7 @@ Trust-boundary rules:
 2. **Track 2 — Defense Extensions** (`defenses/statistical.py`, `defenses/fusion_recovery.py`, `defenses/policy_level.py`):
    - Tune `CusumDefense` and `SlidingWindowDefense` on `DEV_BASE=1100000` to reduce missed detections on small/ramping attacks while controlling clean false alarms.
    - Extend `IKVelocityFusionDefense` (e.g., velocity-channel gating under `joint_vel_coupled`) and train a robust/angle-masked backup SAC policy for `FallbackPolicyDefense` via `--fallback-model`.
+   - Status: tuned defaults, the velocity-consistency gate, the corrected-estimate divergence abort, and the masked fallback policy (`train_fallback.py` -> `models/sac_seed_1_robust/`) are documented with development-set evidence in `defenses/DEV_RESULTS.md`.
 3. **Track 3 — Direction 4A Matrix Evaluation, Ablation & Visualization** (`run_matrix.py`, `run_ablation.py`, `plot_matrix.py`, `evaluation/ablation.py`, `evaluation/visualize.py`):
    - Run full 3-policy `late_strong` and `full_matrix` evaluations on `TEST_BASE=1200000` (`30` paired states/policy, `100` calibration episodes/policy).
    - Run full velocity (`[0.0, 0.05, 0.2, 0.5, 1.0]`) and position (`[0.002, 0.005, 0.010]`) noise ablations and generate heatmaps, detection tradeoff plots, ablation curves, and 3-panel comparison replays.
@@ -199,13 +204,16 @@ python run_matrix.py \
   --models models/sac_seed_1_sync/model.zip \
   --attacks clean threshold_aware elbow_flip joint_vel_coupled policy_gradient \
   --defenses no_defense original_fail_stop cusum ik_velocity_fusion fallback_policy \
-  --fallback-model models/sac_seed_1_sync/model.zip \
+  --fallback-model models/sac_seed_1_robust/model.zip \
   --episodes 4 --calibration-episodes 10 \
   --test-base 1120000 --cal-base 1020000 \
   --no-traces \
   --out outputs/phase2_targeted_check_001
 
-# 6. Full 3-policy matrices and Direction 4A full ablations
+# 6. Train a masked-observation fallback policy (joint-0 encoder hidden inside the network)
+python train_fallback.py --seed 1 --steps 150000 --out outputs/fallback_seed_1_001
+
+# 7. Full 3-policy matrices and Direction 4A full ablations
 python run_matrix.py --preset late_strong --out outputs/phase2_late_strong_001
 python plot_matrix.py outputs/phase2_late_strong_001
 
