@@ -1211,6 +1211,7 @@ def test_top_level_entrypoints_cli(tmp_path: Path) -> None:
         "run_ablation.py",
         "run_matrix.py",
         "train.py",
+        "train_fallback.py",
     ]
     assert (ROOT / "tests" / "test_framework.py").is_file()
     assert (ROOT / "legacy" / "README.md").is_file()
@@ -1226,7 +1227,14 @@ def test_top_level_entrypoints_cli(tmp_path: Path) -> None:
     assert proc.returncode == 0, proc.stderr
     assert (setup_out / "setup_report.json").is_file()
 
-    for script in ("train.py", "demo.py", "run_matrix.py", "run_ablation.py", "plot_matrix.py"):
+    for script in (
+        "train.py",
+        "train_fallback.py",
+        "demo.py",
+        "run_matrix.py",
+        "run_ablation.py",
+        "plot_matrix.py",
+    ):
         help_proc = subprocess.run(
             [sys.executable, str(ROOT / script), "--help"],
             cwd=ROOT,
