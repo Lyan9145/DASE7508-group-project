@@ -62,7 +62,7 @@ def build_parser() -> argparse.ArgumentParser:
         "--fallback-model",
         type=Path,
         default=None,
-        help="Optional fallback SAC model.zip passed to FallbackPolicyDefense",
+        help="Fallback SAC model.zip for FallbackPolicyDefense; required whenever fallback_policy is selected",
     )
     parser.add_argument(
         "--no-traces",

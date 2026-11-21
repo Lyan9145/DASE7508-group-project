@@ -136,7 +136,7 @@ Trust-boundary rules:
   - Statistical: `cusum`, `sliding_window`
   - Fusion/recovery: `continuous_velocity`, `ik_velocity_fusion` (position residual + joint jump check + encoder/velocity consistency gate + single/dual-link IK-velocity fusion)
   - Policy-level: `fallback_policy` (pair with `--fallback-model models/sac_seed_1_robust/model.zip`)
-- **Matrix Presets (`evaluation.list_presets()`)**: `smoke`, `late_strong`, `full_matrix`.
+- **Matrix Presets (`evaluation.list_presets()`)**: `smoke`, `late_strong`, `full_matrix`. `late_strong` and `full_matrix` include `fallback_policy`, so `run_matrix.py` requires `--fallback-model` for them unless `fallback_policy` is dropped via `--defenses`.
 
 ---
 
@@ -214,10 +214,14 @@ python run_matrix.py \
 python train_fallback.py --seed 1 --steps 150000 --out outputs/fallback_seed_1_001
 
 # 7. Full 3-policy matrices and Direction 4A full ablations
-python run_matrix.py --preset late_strong --out outputs/phase2_late_strong_001
+python run_matrix.py --preset late_strong \
+  --fallback-model models/sac_seed_1_robust/model.zip \
+  --out outputs/phase2_late_strong_001
 python plot_matrix.py outputs/phase2_late_strong_001
 
-python run_matrix.py --preset full_matrix --out outputs/phase2_full_matrix_001
+python run_matrix.py --preset full_matrix \
+  --fallback-model models/sac_seed_1_robust/model.zip \
+  --out outputs/phase2_full_matrix_001
 python plot_matrix.py outputs/phase2_full_matrix_001
 
 python run_ablation.py --mode both --preset full --out outputs/phase2_ablation_full_001

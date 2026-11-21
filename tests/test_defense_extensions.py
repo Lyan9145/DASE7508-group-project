@@ -1,6 +1,8 @@
 """Regression checks for the Phase-2 defense extensions (Track 2)."""
 from __future__ import annotations
 
+import subprocess
+import sys
 from pathlib import Path
 
 import gymnasium as gym
@@ -21,6 +23,7 @@ from defenses import (
 )
 from defenses.fusion_recovery import VelocityConsistencyMonitor
 from defenses.policy_level import MaskedObservationExtractor
+from evaluation import run_matrix
 
 ROOT = Path(__file__).resolve().parents[1]
 DT = 0.02
@@ -283,3 +286,24 @@ def test_robust_fallback_model_ignores_joint0_channels() -> None:
     a, _ = model.predict(obs, deterministic=True)
     b, _ = model.predict(scrambled, deterministic=True)
     np.testing.assert_allclose(a, b, atol=1e-6)
+
+
+@pytest.mark.parametrize("preset", ["late_strong", "full_matrix"])
+def test_matrix_cli_requires_fallback_checkpoint(tmp_path: Path, preset: str) -> None:
+    # fallback_policy without a checkpoint would label steps 'fallback' but never
+    # override an action, so the matrix must refuse before writing any output.
+    out_dir = tmp_path / "matrix"
+    proc = subprocess.run(
+        [sys.executable, str(ROOT / "run_matrix.py"), "--preset", preset,
+         "--episodes", "1", "--calibration-episodes", "1", "--out", str(out_dir)],
+        cwd=ROOT, capture_output=True, text=True, timeout=300,
+    )
+    assert proc.returncode != 0
+    assert "--fallback-model" in proc.stderr
+    assert "fallback_policy" in proc.stderr
+    assert not out_dir.exists()
+
+    with pytest.raises(ValueError, match="fallback checkpoint"):
+        run_matrix(out=out_dir, preset="smoke", defenses=["fallback_policy"],
+                   episodes=1, calibration_episodes=1)
+    assert not out_dir.exists()
