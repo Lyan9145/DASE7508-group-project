@@ -593,6 +593,21 @@ def run_matrix(
         _ = create_attack(a_spec.attack_name, **a_spec.params)
     for d_spec in defense_specs:
         _ = create_defense(d_spec.defense_name, **d_spec.params)
+    # Without a checkpoint FallbackPolicyDefense still enters state='fallback'
+    # but never overrides an action, silently reducing to its base defense.
+    missing_fallback = [
+        d.defense_id
+        for d in defense_specs
+        if d.defense_name == "fallback_policy"
+        and fallback_model is None
+        and d.params.get("fallback_model_path") is None
+    ]
+    if missing_fallback:
+        raise ValueError(
+            f"Defense(s) {missing_fallback} need a fallback checkpoint: pass "
+            "--fallback-model (e.g. models/sac_seed_1_robust/model.zip) or drop "
+            "fallback_policy from --defenses"
+        )
 
     loaded_fallback: Any | None = None
     fallback_path_resolved: str | None = None

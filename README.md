@@ -16,6 +16,7 @@ Group 9: joint-angle sensor spoofing and kinematic mitigation for a simulated re
 |---|---|
 | `check_setup.py` | Verifies MuJoCo, Gymnasium `Reacher-v5`, forward kinematics, noise replay, and optional rendering |
 | `train.py` | Trains a clean SAC policy with synchronized sampling and runs 30-episode clean validation |
+| `train_fallback.py` | Trains a SAC fallback policy with the joint-0 encoder masked inside the network, for `fallback_policy --fallback-model` |
 | `demo.py` | Interactive MuJoCo viewer supporting all 12 registered attacks and 8 defenses |
 | `run_matrix.py` | Runs paired Phase-2 `Attack x Defense` evaluations (`smoke`, `late_strong`, `full_matrix`) |
 | `run_ablation.py` | Runs Direction 4A velocity-noise and position-noise ablations (`smoke`, `full`) |
@@ -24,7 +25,7 @@ Group 9: joint-angle sensor spoofing and kinematic mitigation for a simulated re
 | `attacks/` | Attack plugin interface (`base.py`) and registered attack implementations (`legacy.py`, `magnitude_timing.py`, `stealthy.py`, `adaptive.py`) |
 | `defenses/` | Defense plugin interface (`base.py`) and registered defense implementations (`legacy.py`, `statistical.py`, `fusion_recovery.py`, `policy_level.py`) |
 | `evaluation/` | Calibration, paired trial runner, matrix metrics, presets, Direction 4A ablations, and plotting (`metrics.py`, `presets.py`, `runner.py`, `ablation.py`, `visualize.py`) |
-| `models/` | Frozen synchronized-sampling SAC policies (`sac_seed_1_sync/`, `sac_seed_2_sync/`, `sac_seed_3_sync/`) |
+| `models/` | Frozen synchronized-sampling SAC policies (`sac_seed_1_sync/`, `sac_seed_2_sync/`, `sac_seed_3_sync/`) and the masked fallback policy `sac_seed_1_robust/` |
 | `tests/` | Unified verification suite (`tests/test_framework.py`) covering kinematics, contracts, trust boundaries, legacy parity, and CLI smoke tests |
 | `docs/` | Proposal 2.0, reference diagram, frozen Phase-1 protocol (`PROTOCOL.md`), and analysis notes (`ANALYSIS_NOTES.md`) |
 | `env/` | Dependency inputs and environment lockfiles (`requirements.in`, `requirements-dev.txt`, `environment-linux-cpu.lock.txt`, `environment-windows-mp1.lock.txt`, `setup.ps1`) |

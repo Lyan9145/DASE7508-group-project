@@ -108,11 +108,18 @@ class CusumDefense(_BaseStatisticalVelocityDefense):
     Accumulates standardized kinematic residuals ``z = (r - mu) / max(sigma, 1e-6)``
     to catch sustained sub-threshold offsets (e.g., ``ThresholdAwareRampAttack``)
     while also immediately triggering on large spikes above ``spike_factor * threshold``.
+
+    Defaults ``k=1.0, h=5.0, spike_factor=1.5`` were selected on the development
+    block (``DEV_BASE=1100000``, 3 policies x 30 paired states, 10-episode
+    calibration) and confirmed on the ``1110000`` holdout and with 100-episode
+    calibration: clean false-alarm episode rate <= 1.1%, threshold-aware ramp
+    (0.1 rad) detection 92-98% vs 80-87% for the former ``k=1.5``, and about
+    4-5 steps lower mean detection delay. See ``defenses/DEV_RESULTS.md``.
     """
 
     def __init__(
         self,
-        k: float = 1.5,
+        k: float = 1.0,
         h: float = 5.0,
         spike_factor: float = 1.5,
         max_alarm_steps: int | None = None,
@@ -154,42 +161,55 @@ class CusumDefense(_BaseStatisticalVelocityDefense):
         )
         return alarm, {"warmup": False, "cusum": self._cusum, "z": float(z)}
 
-    # TODO (Teammate Task 2): Tune (k, h, spike_factor) against stealthy sub-threshold
-    # attacks (`threshold_aware`, low-epsilon `ramp`) on the dev seed block (1100000+),
-    # and optionally explore two-sided / velocity-channel CUSUM statistics.
-
 
 @register_defense("sliding_window")
 class SlidingWindowDefense(_BaseStatisticalVelocityDefense):
     """M-of-N sliding-window residual detector with single-step spike guard.
 
     Triggers an alarm when at least ``min_hits`` out of the last ``window_size``
-    observations exceed ``calibration.threshold_m``, or when a single residual
-    exceeds ``spike_factor * calibration.threshold_m``.
+    observations exceed ``hit_factor * calibration.threshold_m``, or when a single
+    residual exceeds ``spike_factor * calibration.threshold_m``.
+
+    ``hit_factor < 1`` counts persistent sub-threshold residuals as hits, which is
+    what lets the window see threshold-aware ramps capped just below the
+    single-step threshold (``hit_factor=1.0`` reproduces the former detector,
+    which never detected them). Clean residuals are close to independent across
+    steps, so requiring ``min_hits`` of ``window_size`` keeps false alarms rare
+    even though ``0.8 * threshold`` is near the clean 95th percentile.
+
+    Defaults ``window_size=8, min_hits=4, hit_factor=0.8, spike_factor=1.5``
+    gave 0% clean false-alarm episodes and 94-100% threshold-aware detection on
+    the development block and the ``1110000`` holdout (see
+    ``defenses/DEV_RESULTS.md``).
     """
 
     def __init__(
         self,
-        window_size: int = 5,
-        min_hits: int = 3,
+        window_size: int = 8,
+        min_hits: int = 4,
         spike_factor: float = 1.5,
         max_alarm_steps: int | None = None,
+        hit_factor: float = 0.8,
     ) -> None:
         self.window_size = int(window_size)
         self.min_hits = int(min_hits)
         self.spike_factor = float(spike_factor)
+        self.hit_factor = float(hit_factor)
         if self.window_size < 1:
             raise ValueError("window_size must be >= 1")
         if self.min_hits < 1 or self.min_hits > self.window_size:
             raise ValueError("min_hits must satisfy 1 <= min_hits <= window_size")
         if not np.isfinite(self.spike_factor) or self.spike_factor <= 0.0:
             raise ValueError("spike_factor must be finite and > 0")
+        if not np.isfinite(self.hit_factor) or self.hit_factor <= 0.0:
+            raise ValueError("hit_factor must be finite and > 0")
         self._hits: deque[int] = deque(maxlen=self.window_size)
         super().__init__(
             max_alarm_steps=max_alarm_steps,
             window_size=self.window_size,
             min_hits=self.min_hits,
             spike_factor=self.spike_factor,
+            hit_factor=self.hit_factor,
         )
 
     def _reset_detector(self) -> None:
@@ -204,7 +224,7 @@ class SlidingWindowDefense(_BaseStatisticalVelocityDefense):
         context: DefenseContext,
     ) -> tuple[bool, dict[str, Any]]:
         cal = context.calibration
-        hit = int(residual_m > cal.threshold_m)
+        hit = int(residual_m > self.hit_factor * cal.threshold_m)
         self._hits.append(hit)
         hit_sum = int(sum(self._hits))
         alarm = bool(
@@ -212,7 +232,3 @@ class SlidingWindowDefense(_BaseStatisticalVelocityDefense):
             or (residual_m > self.spike_factor * cal.threshold_m)
         )
         return alarm, {"warmup": False, "window_hits": hit_sum, "hit": bool(hit)}
-
-    # TODO (Teammate Task 2): Compare false-alarm vs detection-delay trade-offs across
-    # (window_size, min_hits) under high position/velocity noise, or combine with
-    # IK-based correction instead of pure velocity dead-reckoning during long alarms.
