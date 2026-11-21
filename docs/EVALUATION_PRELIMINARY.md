@@ -12,7 +12,7 @@ block beginning at 1200000 remains unused.
 - The paired sinusoidal comparison is wired locally and verified on two
   development states. The exploratory pulse and earlier elbow-flip cases
   are candidates for the final manifest.
-- The final run manifest will record the integrated revision, cases, defenses,
+- The [run manifest](EVALUATION_RUN_MANIFEST.md) will record the integrated revision, cases, defenses,
   checkpoint hashes, seeds, and expected row counts.
 
 ## Defense verification
