@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from collections.abc import Iterable, Sequence
 from dataclasses import dataclass, field
+from math import pi
 from typing import Any
 
 
@@ -149,6 +150,17 @@ def _late_strong_attacks() -> tuple[AttackCaseSpec, ...]:
                     "duration": 20,
                     "freq_hz": 5.0,
                     "phase": 0.0,
+                },
+            ),
+            AttackCaseSpec(
+                case_id="sinusoidal_e1.0_s80_d20_f0.25_phase_pi_over_2",
+                attack_name="sinusoidal",
+                params={
+                    "epsilon": 1.0,
+                    "start": 80,
+                    "duration": 20,
+                    "freq_hz": 0.25,
+                    "phase": pi / 2,
                 },
             ),
             AttackCaseSpec(
