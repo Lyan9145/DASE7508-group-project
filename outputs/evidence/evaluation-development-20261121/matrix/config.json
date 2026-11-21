@@ -1,0 +1,103 @@
+{
+  "started_utc": "2026-11-21T12:17:07.615147+00:00",
+  "preset": "full_matrix",
+  "models": [
+    "models/sac_seed_1_sync/model.zip"
+  ],
+  "policy_names": [
+    "sac_seed_1_sync"
+  ],
+  "model_sha256": {
+    "models/sac_seed_1_sync/model.zip": "7f2b85e22601fd847793710991d245f8b6975ef935fa5a2e0592ca83f219bc24"
+  },
+  "attacks": [
+    {
+      "case_id": "clean",
+      "attack_name": "clean",
+      "params": {}
+    },
+    {
+      "case_id": "bias",
+      "attack_name": "bias",
+      "params": {
+        "epsilon": 1.0,
+        "start": 80,
+        "duration": 20
+      }
+    },
+    {
+      "case_id": "threshold_aware",
+      "attack_name": "threshold_aware",
+      "params": {
+        "epsilon": 0.1,
+        "start": 80,
+        "duration": 20,
+        "margin": 0.85
+      }
+    },
+    {
+      "case_id": "elbow_flip",
+      "attack_name": "elbow_flip",
+      "params": {
+        "start": 60,
+        "duration": 30
+      }
+    },
+    {
+      "case_id": "joint_vel_coupled",
+      "attack_name": "joint_vel_coupled",
+      "params": {
+        "epsilon": 1.0,
+        "start": 60,
+        "duration": 40,
+        "vel_bias": 0.5
+      }
+    }
+  ],
+  "defenses": [
+    {
+      "defense_id": "no_defense",
+      "defense_name": "no_defense",
+      "params": {}
+    },
+    {
+      "defense_id": "original_fail_stop",
+      "defense_name": "original_fail_stop",
+      "params": {}
+    },
+    {
+      "defense_id": "cusum",
+      "defense_name": "cusum",
+      "params": {}
+    },
+    {
+      "defense_id": "ik_velocity_fusion",
+      "defense_name": "ik_velocity_fusion",
+      "params": {}
+    },
+    {
+      "defense_id": "fallback_policy",
+      "defense_name": "fallback_policy",
+      "params": {}
+    }
+  ],
+  "episodes": 6,
+  "calibration_episodes": 10,
+  "cal_base": 1000000,
+  "test_base": 1110000,
+  "pos_sigma": 0.002,
+  "vel_sigma": 0.0,
+  "fallback_model": "models/sac_seed_1_robust/model.zip",
+  "write_traces": true,
+  "python": "3.12.14",
+  "platform": "macOS-27.0.1-arm64-arm-64bit",
+  "packages": {
+    "torch": "2.14.1",
+    "numpy": "2.4.6",
+    "gymnasium": "1.4.0",
+    "mujoco": "3.15.0",
+    "stable-baselines3": "2.9.0",
+    "matplotlib": "3.11.2"
+  },
+  "git_head": "5e18eca02978896dd56c37cc7e5e45c3ede8cfe5"
+}

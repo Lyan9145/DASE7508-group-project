@@ -1,0 +1,35 @@
+{
+  "started_utc": "2026-11-21T12:17:08.569375+00:00",
+  "mode": "position",
+  "noise_type": "pos_sigma",
+  "sigmas": [
+    0.002,
+    0.008
+  ],
+  "preset": "smoke",
+  "models": [
+    "models/sac_seed_1_sync/model.zip"
+  ],
+  "policy_names": [
+    "sac_seed_1_sync"
+  ],
+  "attack": {
+    "case_id": "late_bias_e1.0_s80_d20",
+    "attack_name": "bias",
+    "params": {
+      "epsilon": 1.0,
+      "start": 80,
+      "duration": 20
+    }
+  },
+  "defenses": [
+    "no_defense",
+    "original_fail_stop",
+    "continuous_velocity",
+    "ik_velocity_fusion"
+  ],
+  "episodes": 4,
+  "calibration_episodes": 10,
+  "seed_base": 1350000,
+  "cal_base": 1060000
+}

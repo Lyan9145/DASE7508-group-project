@@ -1,0 +1,7 @@
+{
+  "complete": true,
+  "preset": "late_strong",
+  "evaluation_episodes": 6,
+  "calibration_episodes": 10,
+  "elapsed_seconds": 0.9751539590070024
+}

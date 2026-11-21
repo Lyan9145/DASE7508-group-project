@@ -53,7 +53,62 @@ Use the paired clean condition for the distance comparison and identify the
 number of paired initial states. Mark unavailable metrics explicitly. Distinguish
 a fail-stop abort from an episode that finishes outside the distance criterion.
 
-The stock ablation curves show task success and distance. For the final report,
-also extract applied joint-angle error and the calibrated threshold from
-`ablation_summary.csv` and verify how each is aggregated before interpreting
-velocity drift or position-noise sensitivity.
+The ablation curves show task success, distance, applied joint-angle error,
+and calibrated threshold. For the final report, verify the aggregation in
+`ablation_summary.csv` before interpreting velocity drift or position-noise
+sensitivity.
+
+## Sinusoidal comparison for the Phase 2 matrix
+
+The `late_strong` and `full_matrix` presets include two sinusoidal cases:
+
+| Case ID | Frequency | Phase |
+|---|---:|---:|
+| `sinusoidal_e1.0_s80_d20` | 5 Hz | 0 rad |
+| `sinusoidal_e1.0_s80_d20_f0.25_phase_pi_over_2` | 0.25 Hz | π/2 rad |
+
+Both cases use the same amplitude and window. Report them separately on paired
+states. The tuned configuration came from development results in
+[PR #4](https://github.com/Lyan9145/DASE7508-group-project/pull/4). Record the
+integrated revision before the formal run, since the PR also changes the
+behavior of other attack classes under their existing case IDs.
+
+## Final-run checklist
+
+Use the [evaluation run manifest](EVALUATION_RUN_MANIFEST.md) to record the
+frozen configuration and output checks.
+
+- Freeze the integrated commit, attack case IDs and parameters, defense
+  settings, and checkpoint hashes. The matrix records most of this in
+  `config.json`. Record the fallback checkpoint hash separately if one is used.
+  Without that checkpoint, explicitly exclude `fallback_policy` from the final
+  defense selectors or label any run of it as having no backup policy.
+- From the integrated revision, rerun the framework and attack regression
+  tests and a small trace-enabled matrix using development seeds. Confirm that
+  both sinusoidal case IDs appear and that plotting and replay still work.
+- Confirm the expected row counts before opening the held-out block. With the
+  current draft and all eight defense entries, `late_strong` has 21 cases
+  and 15,120 evaluation rows, and `full_matrix` has 30 cases and 21,600 rows.
+  These counts include clean and use 3 policies × 30 paired states per case
+  and defense. Recalculate from the frozen selections. The presets share
+  cases and seeds, so keep their results separate.
+- After each run, check the completion flag, verify the planned row count and
+  unique (policy, seed, case, defense) keys, and confirm that each condition
+  covers the same states within each policy. Keep traces for the selected replay.
+- Agree on the full ablation seed blocks and add angle error and calibrated
+  threshold to the final ablation figures or tables.
+
+## Candidates from the exploratory attack branch
+
+Commit `12be6a8` on `attack/phase2-exploratory-methods` adds a periodic pulse
+case to the attack registry but does not add it to the matrix presets. Review
+the pulse and the earlier elbow-flip case as candidates before freezing the
+matrix. Recheck both on development seeds in the pinned environment after the
+attack changes are integrated. Keep the existing matched sustained-bias and
+elbow-flip rows as references.
+
+For the pulse comparison, report task success, aborts, and detection separately.
+The current episode-level detection metric counts alarms anywhere in the
+scheduled window, including pulse-off observations. If the report needs
+active-pulse detection, use the trace `is_active` flag and label the metric
+separately. Recompute the expected matrix counts when the case list is frozen.
