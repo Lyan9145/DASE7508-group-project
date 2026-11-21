@@ -322,6 +322,7 @@ def plot_detection_tradeoff(run_dir: Path) -> Path:
 def _plot_single_ablation_into_axes(
     ax_succ: Any,
     ax_err: Any,
+    ax_diagnostic: Any,
     summary_rows: Sequence[dict[str, str]],
     config: dict[str, Any],
 ) -> None:
@@ -337,7 +338,8 @@ def _plot_single_ablation_into_axes(
     )
 
     clean_pts: list[tuple[float, float, float]] = []
-    by_defense: dict[str, list[tuple[float, float, float]]] = {}
+    by_defense: dict[str, list[tuple[float, float, float, float]]] = {}
+    thresholds_mm: dict[float, float] = {}
     for row in summary_rows:
         sigma = float(row["noise_sigma"])
         succ = float(row["task_success_rate"]) * 100.0
@@ -348,7 +350,13 @@ def _plot_single_ablation_into_axes(
         if atk == "clean":
             clean_pts.append((sigma, succ, err_cm))
         else:
-            by_defense.setdefault(dfn, []).append((sigma, succ, err_cm))
+            angle_mae = _opt_float(row.get("mean_applied_angle_mae_rad"))
+            by_defense.setdefault(dfn, []).append(
+                (sigma, succ, err_cm, angle_mae if angle_mae is not None else np.nan)
+            )
+        threshold_m = _opt_float(row.get("mean_cal_threshold_m"))
+        if threshold_m is not None:
+            thresholds_mm[sigma] = threshold_m * 1000.0
 
     if clean_pts:
         clean_pts.sort(key=lambda t: t[0])
@@ -391,6 +399,30 @@ def _plot_single_ablation_into_axes(
             label=dfn,
         )
 
+        if noise_type == "vel_sigma" and any(np.isfinite(t[3]) for t in pts):
+            ax_diagnostic.plot(
+                xs, [t[3] for t in pts], marker="o", color=f"C{idx % 10}", label=dfn
+            )
+
+    if noise_type == "vel_sigma":
+        ax_diagnostic.set_title("Joint-Angle Error vs Noise Sigma")
+        ax_diagnostic.set_ylabel("Mean Applied Joint-Angle Error (rad)")
+        if ax_diagnostic.lines:
+            ax_diagnostic.legend(fontsize=8)
+    else:
+        ax_diagnostic.set_title("Calibration Threshold vs Noise Sigma")
+        ax_diagnostic.set_ylabel("Mean Calibrated Threshold (mm)")
+        if thresholds_mm:
+            xs = sorted(thresholds_mm)
+            ax_diagnostic.plot(xs, [thresholds_mm[x] for x in xs], marker="o")
+    if not ax_diagnostic.lines:
+        ax_diagnostic.text(
+            0.5, 0.5, "Diagnostic unavailable", ha="center", va="center",
+            transform=ax_diagnostic.transAxes,
+        )
+    ax_diagnostic.set_xlabel(xlabel)
+    ax_diagnostic.grid(alpha=0.25)
+
     ax_succ.set_xlabel(xlabel)
     ax_succ.set_ylabel("Task Success Rate (%)")
     ax_succ.set_ylim(-5.0, 105.0)
@@ -405,7 +437,7 @@ def _plot_single_ablation_into_axes(
 
 
 def plot_ablation_curves(ablation_dir: Path) -> Path:
-    """Plot task success rate and mean final error vs noise sigma for each defense."""
+    """Plot task outcomes and noise-specific diagnostics for the ablation."""
     ablation_dir = Path(ablation_dir)
     summary_csv = ablation_dir / "ablation_summary.csv"
     if summary_csv.exists():
@@ -418,8 +450,8 @@ def plot_ablation_curves(ablation_dir: Path) -> Path:
             if cfg_path.exists()
             else {}
         )
-        fig, axes = plt.subplots(1, 2, figsize=(11.5, 4.8), constrained_layout=True)
-        _plot_single_ablation_into_axes(axes[0], axes[1], rows, config)
+        fig, axes = plt.subplots(1, 3, figsize=(16, 4.8), constrained_layout=True)
+        _plot_single_ablation_into_axes(*axes, rows, config)
         mode = config.get("mode", rows[0].get("noise_type", "ablation"))
         atk_case = (config.get("attack") or {}).get("case_id", "")
         axes[0].set_title("Task Success vs Noise Sigma")
@@ -448,8 +480,8 @@ def plot_ablation_curves(ablation_dir: Path) -> Path:
 
     fig, axes = plt.subplots(
         len(sub_dirs),
-        2,
-        figsize=(11.5, 4.6 * len(sub_dirs)),
+        3,
+        figsize=(16, 4.6 * len(sub_dirs)),
         squeeze=False,
         constrained_layout=True,
     )
@@ -461,7 +493,7 @@ def plot_ablation_curves(ablation_dir: Path) -> Path:
             if cfg_path.exists()
             else {}
         )
-        _plot_single_ablation_into_axes(axes[idx, 0], axes[idx, 1], rows, config)
+        _plot_single_ablation_into_axes(*axes[idx], rows, config)
         mode = config.get("mode", sub.name)
         axes[idx, 0].set_title(f"{mode}: Task Success vs Sigma")
         axes[idx, 1].set_title(f"{mode}: Final Distance vs Sigma")
