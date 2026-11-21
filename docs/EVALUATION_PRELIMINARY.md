@@ -47,14 +47,22 @@ two-state check with the checkpoint recorded 62 action overrides.
 
 Both smoke sweeps were rerun on the merged Defense code. Each used one policy,
 four paired states per noise level, and 40 evaluation episodes in total.
-The result checker accepted both sweeps and the combined run. The two defenses
-shown in the velocity table succeeded in all four states at both noise levels.
-Their mean applied angle error differs even when success counts are equal.
+The result checker accepted both sweeps and the combined run.
 
-| Velocity noise SD (rad/s) | Mean applied angle error, continuous velocity (rad) | Mean applied angle error, IK fusion (rad) |
+A separate five-level velocity sweep used three policies and 30 paired states
+per policy at each level. The checker accepted all 2,250 evaluation
+episodes. The velocity sweep used development seeds starting at 1150000
+and calibration seeds starting at 1070000.
+
+| Velocity noise SD (rad/s) | Mean applied angle error, continuous velocity (mrad) | Mean applied angle error, IK fusion (mrad) |
 |---:|---:|---:|
-| 0.00 | 0.00113 | 0.00458 |
-| 0.50 | 0.02238 | 0.00519 |
+| 0.00 | 0.77 | 5.40 |
+| 0.05 | 2.39 | 5.41 |
+| 0.20 | 9.20 | 5.58 |
+| 0.50 | 23.02 | 6.41 |
+| 1.00 | 46.05 | 8.62 |
+
+The position threshold values below come from the smoke run.
 
 | Position noise SD (m) | Mean calibrated threshold (mm) |
 |---:|---:|
