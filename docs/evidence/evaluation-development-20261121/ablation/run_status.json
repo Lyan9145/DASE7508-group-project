@@ -1,0 +1,8 @@
+{
+  "complete": true,
+  "mode": "both",
+  "preset": "smoke",
+  "evaluation_episodes": 80,
+  "calibration_episodes": 40,
+  "elapsed_seconds": 2.5796197919989936
+}

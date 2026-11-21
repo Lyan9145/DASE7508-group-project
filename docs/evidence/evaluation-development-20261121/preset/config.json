@@ -1,0 +1,68 @@
+{
+  "started_utc": "2026-11-21T12:17:06.905579+00:00",
+  "preset": "late_strong",
+  "models": [
+    "models/sac_seed_1_sync/model.zip"
+  ],
+  "policy_names": [
+    "sac_seed_1_sync"
+  ],
+  "model_sha256": {
+    "models/sac_seed_1_sync/model.zip": "7f2b85e22601fd847793710991d245f8b6975ef935fa5a2e0592ca83f219bc24"
+  },
+  "attacks": [
+    {
+      "case_id": "clean",
+      "attack_name": "clean",
+      "params": {}
+    },
+    {
+      "case_id": "sinusoidal_e1.0_s80_d20",
+      "attack_name": "sinusoidal",
+      "params": {
+        "epsilon": 1.0,
+        "start": 80,
+        "duration": 20,
+        "freq_hz": 5.0,
+        "phase": 0.0
+      }
+    },
+    {
+      "case_id": "sinusoidal_e1.0_s80_d20_f0.25_phase_pi_over_2",
+      "attack_name": "sinusoidal",
+      "params": {
+        "epsilon": 1.0,
+        "start": 80,
+        "duration": 20,
+        "freq_hz": 0.25,
+        "phase": 1.5707963267948966
+      }
+    }
+  ],
+  "defenses": [
+    {
+      "defense_id": "no_defense",
+      "defense_name": "no_defense",
+      "params": {}
+    }
+  ],
+  "episodes": 2,
+  "calibration_episodes": 10,
+  "cal_base": 1000000,
+  "test_base": 1100000,
+  "pos_sigma": 0.002,
+  "vel_sigma": 0.0,
+  "fallback_model": null,
+  "write_traces": true,
+  "python": "3.12.14",
+  "platform": "macOS-27.0.1-arm64-arm-64bit",
+  "packages": {
+    "torch": "2.14.1",
+    "numpy": "2.4.6",
+    "gymnasium": "1.4.0",
+    "mujoco": "3.15.0",
+    "stable-baselines3": "2.9.0",
+    "matplotlib": "3.11.2"
+  },
+  "git_head": "5e18eca02978896dd56c37cc7e5e45c3ede8cfe5"
+}
