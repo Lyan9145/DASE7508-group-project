@@ -183,6 +183,17 @@ def _full_matrix_attacks() -> tuple[AttackCaseSpec, ...]:
     cases.extend(
         [
             AttackCaseSpec(
+                case_id="pulse_e1.0_s60_d40_on18_off2",
+                attack_name="pulse",
+                params={
+                    "epsilon": 1.0,
+                    "start": 60,
+                    "duration": 40,
+                    "on_steps": 18,
+                    "off_steps": 2,
+                },
+            ),
+            AttackCaseSpec(
                 case_id="random_bias_e1.0_s80_d20",
                 attack_name="random_bias",
                 params={"epsilon": 1.0, "start": 80, "duration": 20},
