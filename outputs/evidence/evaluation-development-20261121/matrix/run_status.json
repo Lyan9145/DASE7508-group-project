@@ -1,0 +1,7 @@
+{
+  "complete": true,
+  "preset": "full_matrix",
+  "evaluation_episodes": 150,
+  "calibration_episodes": 10,
+  "elapsed_seconds": 3.930061332997866
+}

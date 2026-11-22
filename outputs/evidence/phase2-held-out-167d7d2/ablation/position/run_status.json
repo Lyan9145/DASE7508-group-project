@@ -1,0 +1,13 @@
+{
+  "complete": true,
+  "mode": "position",
+  "noise_type": "pos_sigma",
+  "sigmas": [
+    0.002,
+    0.005,
+    0.01
+  ],
+  "evaluation_episodes": 1350,
+  "calibration_episodes": 900,
+  "elapsed_seconds": 32.96692229202017
+}

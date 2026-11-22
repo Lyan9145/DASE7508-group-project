@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from collections.abc import Iterable, Sequence
 from dataclasses import dataclass, field
+from math import pi
 from typing import Any
 
 
@@ -152,6 +153,17 @@ def _late_strong_attacks() -> tuple[AttackCaseSpec, ...]:
                 },
             ),
             AttackCaseSpec(
+                case_id="sinusoidal_e1.0_s80_d20_f0.25_phase_pi_over_2",
+                attack_name="sinusoidal",
+                params={
+                    "epsilon": 1.0,
+                    "start": 80,
+                    "duration": 20,
+                    "freq_hz": 0.25,
+                    "phase": pi / 2,
+                },
+            ),
+            AttackCaseSpec(
                 case_id="freeze_s60_d40",
                 attack_name="freeze",
                 params={"start": 60, "duration": 40},
@@ -170,6 +182,17 @@ def _full_matrix_attacks() -> tuple[AttackCaseSpec, ...]:
     cases = list(_late_strong_attacks())
     cases.extend(
         [
+            AttackCaseSpec(
+                case_id="pulse_e1.0_s60_d40_on18_off2",
+                attack_name="pulse",
+                params={
+                    "epsilon": 1.0,
+                    "start": 60,
+                    "duration": 40,
+                    "on_steps": 18,
+                    "off_steps": 2,
+                },
+            ),
             AttackCaseSpec(
                 case_id="random_bias_e1.0_s80_d20",
                 attack_name="random_bias",

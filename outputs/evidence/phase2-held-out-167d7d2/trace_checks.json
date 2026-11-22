@@ -1,0 +1,26 @@
+{
+  "fallback_override_steps": 44850,
+  "fallback_override_episodes": 2414,
+  "replay": {
+    "policy": "sac_seed_1_sync",
+    "case": "sustained_bias_e1.0_s60_d40",
+    "seed": 1200007,
+    "panels": {
+      "no_defense": {
+        "success": false,
+        "aborted": false,
+        "steps": 100
+      },
+      "original_fail_stop": {
+        "success": false,
+        "aborted": true,
+        "steps": 80
+      },
+      "ik_velocity_fusion": {
+        "success": true,
+        "aborted": false,
+        "steps": 100
+      }
+    }
+  }
+}

@@ -263,5 +263,39 @@ class ReplayAttack(BaseAttack):
         )
 
 
+@register_attack("pulse")
+class PulseAttack(BaseAttack):
+    """Apply a fixed angle offset in repeated on/off intervals."""
+
+    def __init__(
+        self, epsilon: float = 1.0, duration: int = 40, start: int = 60,
+        on_steps: int = 18, off_steps: int = 2, sign: int = 1,
+    ) -> None:
+        epsilon = _validate_nonneg_finite(epsilon, "epsilon")
+        duration, start, sign = _validate_window_params(duration, start, sign)
+        on_steps, off_steps = int(on_steps), int(off_steps)
+        if on_steps < 1 or off_steps < 1:
+            raise ValueError("on_steps and off_steps must be >= 1")
+        super().__init__(epsilon=epsilon, duration=duration, start=start,
+                         on_steps=on_steps, off_steps=off_steps, sign=sign)
+        self.epsilon, self.duration, self.start = epsilon, duration, start
+        self.on_steps, self.off_steps = on_steps, off_steps
+
+    def apply(self, raw_obs: np.ndarray, step: int, context: AttackContext) -> AttackResult:
+        del context
+        raw = np.asarray(raw_obs, dtype=np.float64)
+        reported = np.array(raw, copy=True)
+        active = self.start <= int(step) < self.start + self.duration
+        injected = active and (int(step) - self.start) % (
+            self.on_steps + self.off_steps
+        ) < self.on_steps
+        delta = self.sign * self.epsilon if injected else 0.0
+        _apply_joint0_delta(reported, raw, delta)
+        return AttackResult(
+            reported_obs=reported, is_active=active, attacked_channels=(0, 2),
+            delta_rad=float(delta), metadata={"injected": bool(injected)},
+        )
+
+
 # TODO (Teammate Task 1): Tune freq_hz/phase/replay_len sweeps, add chirp or bursty
 # timing schedules, and optionally extend freeze/replay to joint-1 or velocity channels.

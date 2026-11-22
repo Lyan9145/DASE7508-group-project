@@ -20,7 +20,7 @@ from .legacy import (
     RandomBiasAttack,
     RandomRampAttack,
 )
-from .magnitude_timing import FreezeAttack, ReplayAttack, SinusoidalAttack
+from .magnitude_timing import FreezeAttack, PulseAttack, ReplayAttack, SinusoidalAttack
 from .stealthy import (
     ElbowFlipAttack,
     JointVelocityCoupledAttack,
@@ -48,6 +48,7 @@ __all__ = [
     "RandomRampAttack",
     "SinusoidalAttack",
     "FreezeAttack",
+    "PulseAttack",
     "ReplayAttack",
     "ThresholdAwareRampAttack",
     "ElbowFlipAttack",
