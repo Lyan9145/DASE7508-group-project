@@ -1,24 +1,21 @@
 # Evaluation run manifest
 
-Copy this template into the final run record and fill in all decisions before
-using the held-out seeds. Attach the actual commands and output configs after
-execution.
+This records the configuration used for the held-out evaluation. The
+[results bundle](../outputs/evidence/phase2-held-out-167d7d2/README.md) contains
+the frozen settings, resolved run configs, and completed results.
 
 ## Freeze record
 
 | Item | Value |
 |---|---|
-| Integrated Git commit and package lock | Preparation branch tested locally. Record the final shared commit and package lock before execution. |
-| Attack cases and effective settings | Preparation includes both sinusoidal IDs and the existing pulse configuration from Attack commit `12be6a8` in `full_matrix`. The earlier elbow-flip candidate remains outside the proposed case list. |
-| Defense settings | Pending. Record effective parameters, including any values supplied by class defaults. |
-| Three baseline checkpoint paths and SHA-256 hashes | Pending |
-| Backup checkpoint path and SHA-256 hash | Candidate verified on the merged Defense code. See the hash below. |
-| Environment and package versions | Pending |
-| Frozen by and date | Pending |
+| Integrated Git commit and package lock | `167d7d26817399752f157dc1b603c74949538691` and the pinned `requirements.txt` at that revision |
+| Attack cases and effective settings | Both sinusoidal IDs are included. `full_matrix` includes the pulse from Attack commit `12be6a8`. The earlier elbow-flip candidate was outside this case list. |
+| Defense settings | All eight defense entries, with effective settings in the frozen configuration |
+| Three baseline checkpoint paths and SHA-256 hashes | Verified against the checkout before running |
+| Backup checkpoint path and SHA-256 hash | Used the verified `sac_seed_1_robust` checkpoint below |
+| Environment and package versions | Apple Silicon macOS, CPython 3.12.14, CPU inference. Installed runtime versions matched the lock. |
 
-## Verified candidate checkpoints
-
-Confirm these paths and hashes again at the frozen revision.
+## Verified checkpoints
 
 | Checkpoint | SHA-256 |
 |---|---|
@@ -27,37 +24,42 @@ Confirm these paths and hashes again at the frozen revision.
 | `models/sac_seed_3_sync/model.zip` | `2ba35bea85ccbbfdb50d16cfa8257b2362329202c67fe6c716d58dc8b577616f` |
 | `models/sac_seed_1_robust/model.zip` | `1a2cc2dba8d1487c8e0b6ccaf1653968cd9b79c6053b290af681e46b90513c3b` |
 
-If the frozen configuration includes `fallback_policy`, pass the verified
-checkpoint explicitly with `--fallback-model models/sac_seed_1_robust/model.zip`
-and confirm a development trace records
-`defense_status.action_overridden=true` in a case that exercises the switch.
-Record override steps and episodes separately from steps labeled
-`state="fallback"`.
+The matrices used `--fallback-model models/sac_seed_1_robust/model.zip`.
+The full matrix retained traces for replay and fallback action-override
+counts.
 
-## Planned runs
+## Executed runs
 
-| Run | Calibration seed base / episodes per policy | Evaluation seed base / states per policy | Expected rows | Output directory |
+| Run | Calibration seed base / episodes per policy | Evaluation seed base / states per policy | Evaluation rows | Output directory |
 |---|---|---|---|---|
-| Integrated smoke | Development calibration / pending | Development block / pending | Pending | Pending |
-| `late_strong` | `1000000` / 100 | `1200000` / 30 | 15,120 | Pending |
-| `full_matrix` | `1000000` / 100 | `1200000` / 30 | 22,320 | Pending |
+| `late_strong` | `1000000` / 100 | `1200000` / 30 | 15,120 | `late_strong/` |
+| `full_matrix` | `1000000` / 100 | `1200000` / 30 | 22,320 | `full_matrix/` |
 | Velocity ablation | `1400000` / 100 per noise level | `1450000` / 30 per noise level | 2,250 | `velocity/` within the combined ablation run |
 | Position ablation | `1500000` / 100 per noise level | `1550000` / 30 per noise level | 1,350 | `position/` within the combined ablation run |
 
 Matrix rows equal policies × states × cases × defenses, including the clean
-case. With the current draft and all eight defenses, the counts are 15,120
+case. With the frozen case list and all eight defenses, the counts are 15,120
 for `late_strong` and 22,320 for `full_matrix` with its 31 cases, including
 `pulse_e1.0_s60_d40_on18_off2`. Recalculate if the case or defense lists change.
 Keep the two matrix runs separate because they share conditions and seeds.
-The four proposed ablation blocks are disjoint across all three policies
+The four ablation blocks are disjoint across all three policies
 (with a stride of 1,000), the known smoke runs, the five-level development
 sweep, and the official matrix block. Each sweep reuses its paired states
-across noise levels. Decide which runs retain traces and preserve at least the
-matrix traces needed for the replay and fallback-override counts.
+across noise levels.
 
-## Ablation command after the freeze
+## Reproduction commands
+
+Run from the frozen revision with the locked dependencies installed. The
+commands below create fresh directories. The evidence bundle uses shorter
+subdirectory names for the archived summaries and figures.
 
 ```bash
+python run_matrix.py --preset late_strong \
+  --fallback-model models/sac_seed_1_robust/model.zip \
+  --no-traces --out outputs/phase2_late_strong_final_001
+python run_matrix.py --preset full_matrix \
+  --fallback-model models/sac_seed_1_robust/model.zip \
+  --out outputs/phase2_full_matrix_final_001
 python run_ablation.py --mode both --preset full \
   --velocity-cal-base 1400000 --velocity-seed-base 1450000 \
   --position-cal-base 1500000 --position-seed-base 1550000 \

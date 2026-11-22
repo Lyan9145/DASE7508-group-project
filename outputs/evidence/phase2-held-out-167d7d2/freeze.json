@@ -1,0 +1,653 @@
+{
+  "revision": "167d7d26817399752f157dc1b603c74949538691",
+  "requirements_sha256": "617fa1e9c924861e416ff8980fa2ffdd4523941af4d0fb4b01929c1cae829db2",
+  "python": "3.12.14",
+  "platform": "macOS-27.0.1-arm64-arm-64bit",
+  "checkpoints_sha256": {
+    "models/sac_seed_1_sync/model.zip": "7f2b85e22601fd847793710991d245f8b6975ef935fa5a2e0592ca83f219bc24",
+    "models/sac_seed_2_sync/model.zip": "dc3d8fb11d9f874b5bdee1384af18d3c4a947900a2105201d3382363fc7141b9",
+    "models/sac_seed_3_sync/model.zip": "2ba35bea85ccbbfdb50d16cfa8257b2362329202c67fe6c716d58dc8b577616f",
+    "models/sac_seed_1_robust/model.zip": "1a2cc2dba8d1487c8e0b6ccaf1653968cd9b79c6053b290af681e46b90513c3b"
+  },
+  "matrix_presets": {
+    "late_strong": {
+      "name": "late_strong",
+      "models": [
+        "models/sac_seed_1_sync/model.zip",
+        "models/sac_seed_2_sync/model.zip",
+        "models/sac_seed_3_sync/model.zip"
+      ],
+      "episodes": 30,
+      "calibration_episodes": 100,
+      "cal_base": 1000000,
+      "test_base": 1200000,
+      "pos_sigma": 0.002,
+      "vel_sigma": 0.0,
+      "attacks": [
+        {
+          "case_id": "clean",
+          "attack_name": "clean",
+          "params": {}
+        },
+        {
+          "case_id": "late_bias_e0.3_s80_d20",
+          "attack_name": "bias",
+          "params": {
+            "epsilon": 0.3,
+            "start": 80,
+            "duration": 20
+          }
+        },
+        {
+          "case_id": "late_bias_e0.5_s80_d20",
+          "attack_name": "bias",
+          "params": {
+            "epsilon": 0.5,
+            "start": 80,
+            "duration": 20
+          }
+        },
+        {
+          "case_id": "late_bias_e1.0_s80_d20",
+          "attack_name": "bias",
+          "params": {
+            "epsilon": 1.0,
+            "start": 80,
+            "duration": 20
+          }
+        },
+        {
+          "case_id": "late_bias_e1.57_s80_d20",
+          "attack_name": "bias",
+          "params": {
+            "epsilon": 1.57,
+            "start": 80,
+            "duration": 20
+          }
+        },
+        {
+          "case_id": "sustained_bias_e0.3_s60_d40",
+          "attack_name": "bias",
+          "params": {
+            "epsilon": 0.3,
+            "start": 60,
+            "duration": 40
+          }
+        },
+        {
+          "case_id": "sustained_bias_e0.5_s60_d40",
+          "attack_name": "bias",
+          "params": {
+            "epsilon": 0.5,
+            "start": 60,
+            "duration": 40
+          }
+        },
+        {
+          "case_id": "sustained_bias_e1.0_s60_d40",
+          "attack_name": "bias",
+          "params": {
+            "epsilon": 1.0,
+            "start": 60,
+            "duration": 40
+          }
+        },
+        {
+          "case_id": "sustained_bias_e1.57_s60_d40",
+          "attack_name": "bias",
+          "params": {
+            "epsilon": 1.57,
+            "start": 60,
+            "duration": 40
+          }
+        },
+        {
+          "case_id": "late_ramp_e0.3_s80_d20",
+          "attack_name": "ramp",
+          "params": {
+            "epsilon": 0.3,
+            "start": 80,
+            "duration": 20
+          }
+        },
+        {
+          "case_id": "late_ramp_e0.5_s80_d20",
+          "attack_name": "ramp",
+          "params": {
+            "epsilon": 0.5,
+            "start": 80,
+            "duration": 20
+          }
+        },
+        {
+          "case_id": "late_ramp_e1.0_s80_d20",
+          "attack_name": "ramp",
+          "params": {
+            "epsilon": 1.0,
+            "start": 80,
+            "duration": 20
+          }
+        },
+        {
+          "case_id": "late_ramp_e1.57_s80_d20",
+          "attack_name": "ramp",
+          "params": {
+            "epsilon": 1.57,
+            "start": 80,
+            "duration": 20
+          }
+        },
+        {
+          "case_id": "sustained_ramp_e0.3_s60_d40",
+          "attack_name": "ramp",
+          "params": {
+            "epsilon": 0.3,
+            "start": 60,
+            "duration": 40
+          }
+        },
+        {
+          "case_id": "sustained_ramp_e0.5_s60_d40",
+          "attack_name": "ramp",
+          "params": {
+            "epsilon": 0.5,
+            "start": 60,
+            "duration": 40
+          }
+        },
+        {
+          "case_id": "sustained_ramp_e1.0_s60_d40",
+          "attack_name": "ramp",
+          "params": {
+            "epsilon": 1.0,
+            "start": 60,
+            "duration": 40
+          }
+        },
+        {
+          "case_id": "sustained_ramp_e1.57_s60_d40",
+          "attack_name": "ramp",
+          "params": {
+            "epsilon": 1.57,
+            "start": 60,
+            "duration": 40
+          }
+        },
+        {
+          "case_id": "sinusoidal_e1.0_s80_d20",
+          "attack_name": "sinusoidal",
+          "params": {
+            "epsilon": 1.0,
+            "start": 80,
+            "duration": 20,
+            "freq_hz": 5.0,
+            "phase": 0.0
+          }
+        },
+        {
+          "case_id": "sinusoidal_e1.0_s80_d20_f0.25_phase_pi_over_2",
+          "attack_name": "sinusoidal",
+          "params": {
+            "epsilon": 1.0,
+            "start": 80,
+            "duration": 20,
+            "freq_hz": 0.25,
+            "phase": 1.5707963267948966
+          }
+        },
+        {
+          "case_id": "freeze_s60_d40",
+          "attack_name": "freeze",
+          "params": {
+            "start": 60,
+            "duration": 40
+          }
+        },
+        {
+          "case_id": "replay_s60_d40",
+          "attack_name": "replay",
+          "params": {
+            "start": 60,
+            "duration": 40,
+            "replay_len": 10
+          }
+        }
+      ],
+      "defenses": [
+        {
+          "defense_id": "no_defense",
+          "defense_name": "no_defense",
+          "params": {}
+        },
+        {
+          "defense_id": "original_fail_stop",
+          "defense_name": "original_fail_stop",
+          "params": {}
+        },
+        {
+          "defense_id": "grace1",
+          "defense_name": "grace1",
+          "params": {}
+        },
+        {
+          "defense_id": "cusum",
+          "defense_name": "cusum",
+          "params": {}
+        },
+        {
+          "defense_id": "sliding_window",
+          "defense_name": "sliding_window",
+          "params": {}
+        },
+        {
+          "defense_id": "continuous_velocity",
+          "defense_name": "continuous_velocity",
+          "params": {}
+        },
+        {
+          "defense_id": "ik_velocity_fusion",
+          "defense_name": "ik_velocity_fusion",
+          "params": {}
+        },
+        {
+          "defense_id": "fallback_policy",
+          "defense_name": "fallback_policy",
+          "params": {}
+        }
+      ]
+    },
+    "full_matrix": {
+      "name": "full_matrix",
+      "models": [
+        "models/sac_seed_1_sync/model.zip",
+        "models/sac_seed_2_sync/model.zip",
+        "models/sac_seed_3_sync/model.zip"
+      ],
+      "episodes": 30,
+      "calibration_episodes": 100,
+      "cal_base": 1000000,
+      "test_base": 1200000,
+      "pos_sigma": 0.002,
+      "vel_sigma": 0.0,
+      "attacks": [
+        {
+          "case_id": "clean",
+          "attack_name": "clean",
+          "params": {}
+        },
+        {
+          "case_id": "late_bias_e0.3_s80_d20",
+          "attack_name": "bias",
+          "params": {
+            "epsilon": 0.3,
+            "start": 80,
+            "duration": 20
+          }
+        },
+        {
+          "case_id": "late_bias_e0.5_s80_d20",
+          "attack_name": "bias",
+          "params": {
+            "epsilon": 0.5,
+            "start": 80,
+            "duration": 20
+          }
+        },
+        {
+          "case_id": "late_bias_e1.0_s80_d20",
+          "attack_name": "bias",
+          "params": {
+            "epsilon": 1.0,
+            "start": 80,
+            "duration": 20
+          }
+        },
+        {
+          "case_id": "late_bias_e1.57_s80_d20",
+          "attack_name": "bias",
+          "params": {
+            "epsilon": 1.57,
+            "start": 80,
+            "duration": 20
+          }
+        },
+        {
+          "case_id": "sustained_bias_e0.3_s60_d40",
+          "attack_name": "bias",
+          "params": {
+            "epsilon": 0.3,
+            "start": 60,
+            "duration": 40
+          }
+        },
+        {
+          "case_id": "sustained_bias_e0.5_s60_d40",
+          "attack_name": "bias",
+          "params": {
+            "epsilon": 0.5,
+            "start": 60,
+            "duration": 40
+          }
+        },
+        {
+          "case_id": "sustained_bias_e1.0_s60_d40",
+          "attack_name": "bias",
+          "params": {
+            "epsilon": 1.0,
+            "start": 60,
+            "duration": 40
+          }
+        },
+        {
+          "case_id": "sustained_bias_e1.57_s60_d40",
+          "attack_name": "bias",
+          "params": {
+            "epsilon": 1.57,
+            "start": 60,
+            "duration": 40
+          }
+        },
+        {
+          "case_id": "late_ramp_e0.3_s80_d20",
+          "attack_name": "ramp",
+          "params": {
+            "epsilon": 0.3,
+            "start": 80,
+            "duration": 20
+          }
+        },
+        {
+          "case_id": "late_ramp_e0.5_s80_d20",
+          "attack_name": "ramp",
+          "params": {
+            "epsilon": 0.5,
+            "start": 80,
+            "duration": 20
+          }
+        },
+        {
+          "case_id": "late_ramp_e1.0_s80_d20",
+          "attack_name": "ramp",
+          "params": {
+            "epsilon": 1.0,
+            "start": 80,
+            "duration": 20
+          }
+        },
+        {
+          "case_id": "late_ramp_e1.57_s80_d20",
+          "attack_name": "ramp",
+          "params": {
+            "epsilon": 1.57,
+            "start": 80,
+            "duration": 20
+          }
+        },
+        {
+          "case_id": "sustained_ramp_e0.3_s60_d40",
+          "attack_name": "ramp",
+          "params": {
+            "epsilon": 0.3,
+            "start": 60,
+            "duration": 40
+          }
+        },
+        {
+          "case_id": "sustained_ramp_e0.5_s60_d40",
+          "attack_name": "ramp",
+          "params": {
+            "epsilon": 0.5,
+            "start": 60,
+            "duration": 40
+          }
+        },
+        {
+          "case_id": "sustained_ramp_e1.0_s60_d40",
+          "attack_name": "ramp",
+          "params": {
+            "epsilon": 1.0,
+            "start": 60,
+            "duration": 40
+          }
+        },
+        {
+          "case_id": "sustained_ramp_e1.57_s60_d40",
+          "attack_name": "ramp",
+          "params": {
+            "epsilon": 1.57,
+            "start": 60,
+            "duration": 40
+          }
+        },
+        {
+          "case_id": "sinusoidal_e1.0_s80_d20",
+          "attack_name": "sinusoidal",
+          "params": {
+            "epsilon": 1.0,
+            "start": 80,
+            "duration": 20,
+            "freq_hz": 5.0,
+            "phase": 0.0
+          }
+        },
+        {
+          "case_id": "sinusoidal_e1.0_s80_d20_f0.25_phase_pi_over_2",
+          "attack_name": "sinusoidal",
+          "params": {
+            "epsilon": 1.0,
+            "start": 80,
+            "duration": 20,
+            "freq_hz": 0.25,
+            "phase": 1.5707963267948966
+          }
+        },
+        {
+          "case_id": "freeze_s60_d40",
+          "attack_name": "freeze",
+          "params": {
+            "start": 60,
+            "duration": 40
+          }
+        },
+        {
+          "case_id": "replay_s60_d40",
+          "attack_name": "replay",
+          "params": {
+            "start": 60,
+            "duration": 40,
+            "replay_len": 10
+          }
+        },
+        {
+          "case_id": "pulse_e1.0_s60_d40_on18_off2",
+          "attack_name": "pulse",
+          "params": {
+            "epsilon": 1.0,
+            "start": 60,
+            "duration": 40,
+            "on_steps": 18,
+            "off_steps": 2
+          }
+        },
+        {
+          "case_id": "random_bias_e1.0_s80_d20",
+          "attack_name": "random_bias",
+          "params": {
+            "epsilon": 1.0,
+            "start": 80,
+            "duration": 20
+          }
+        },
+        {
+          "case_id": "random_ramp_e1.0_s80_d20",
+          "attack_name": "random_ramp",
+          "params": {
+            "epsilon": 1.0,
+            "start": 80,
+            "duration": 20
+          }
+        },
+        {
+          "case_id": "threshold_aware_e0.1_s80_d20",
+          "attack_name": "threshold_aware",
+          "params": {
+            "epsilon": 0.1,
+            "start": 80,
+            "duration": 20,
+            "margin": 0.85
+          }
+        },
+        {
+          "case_id": "threshold_aware_e0.3_s60_d40",
+          "attack_name": "threshold_aware",
+          "params": {
+            "epsilon": 0.3,
+            "start": 60,
+            "duration": 40,
+            "margin": 0.85
+          }
+        },
+        {
+          "case_id": "elbow_flip_s60_d30",
+          "attack_name": "elbow_flip",
+          "params": {
+            "start": 60,
+            "duration": 30
+          }
+        },
+        {
+          "case_id": "elbow_flip_s80_d20",
+          "attack_name": "elbow_flip",
+          "params": {
+            "start": 80,
+            "duration": 20
+          }
+        },
+        {
+          "case_id": "joint_vel_coupled_e1.0_s60_d40",
+          "attack_name": "joint_vel_coupled",
+          "params": {
+            "epsilon": 1.0,
+            "start": 60,
+            "duration": 40,
+            "vel_bias": 0.5
+          }
+        },
+        {
+          "case_id": "policy_gradient_e0.5_s80_d20",
+          "attack_name": "policy_gradient",
+          "params": {
+            "epsilon": 0.5,
+            "start": 80,
+            "duration": 20,
+            "n_steps": 5
+          }
+        },
+        {
+          "case_id": "policy_gradient_e1.0_s60_d40",
+          "attack_name": "policy_gradient",
+          "params": {
+            "epsilon": 1.0,
+            "start": 60,
+            "duration": 40,
+            "n_steps": 5
+          }
+        }
+      ],
+      "defenses": [
+        {
+          "defense_id": "no_defense",
+          "defense_name": "no_defense",
+          "params": {}
+        },
+        {
+          "defense_id": "original_fail_stop",
+          "defense_name": "original_fail_stop",
+          "params": {}
+        },
+        {
+          "defense_id": "grace1",
+          "defense_name": "grace1",
+          "params": {}
+        },
+        {
+          "defense_id": "cusum",
+          "defense_name": "cusum",
+          "params": {}
+        },
+        {
+          "defense_id": "sliding_window",
+          "defense_name": "sliding_window",
+          "params": {}
+        },
+        {
+          "defense_id": "continuous_velocity",
+          "defense_name": "continuous_velocity",
+          "params": {}
+        },
+        {
+          "defense_id": "ik_velocity_fusion",
+          "defense_name": "ik_velocity_fusion",
+          "params": {}
+        },
+        {
+          "defense_id": "fallback_policy",
+          "defense_name": "fallback_policy",
+          "params": {}
+        }
+      ]
+    }
+  },
+  "effective_defenses": {
+    "no_defense": {},
+    "original_fail_stop": {
+      "max_alarm_steps": 20
+    },
+    "grace1": {
+      "grace": 1
+    },
+    "cusum": {
+      "max_alarm_steps": null,
+      "k": 1.0,
+      "h": 5.0,
+      "spike_factor": 1.5
+    },
+    "sliding_window": {
+      "max_alarm_steps": null,
+      "window_size": 8,
+      "min_hits": 4,
+      "spike_factor": 1.5,
+      "hit_factor": 0.8
+    },
+    "continuous_velocity": {
+      "divergence_abort_m": null,
+      "threshold_factor": 1.5
+    },
+    "ik_velocity_fusion": {
+      "alpha": 0.5,
+      "jump_factor": 2.5,
+      "min_jump_rad": 0.15,
+      "threshold_factor": 1.5,
+      "velocity_gate": true,
+      "vel_window": 5,
+      "vel_z": 4.0,
+      "vel_tol_rad": 0.002
+    },
+    "fallback_policy": {
+      "switch_streak": 10,
+      "fallback_model_path": null,
+      "base_defense": "ik_velocity_fusion",
+      "latch": false
+    }
+  },
+  "ablation_seeds": {
+    "velocity": {
+      "calibration": 1400000,
+      "evaluation": 1450000
+    },
+    "position": {
+      "calibration": 1500000,
+      "evaluation": 1550000
+    }
+  }
+}

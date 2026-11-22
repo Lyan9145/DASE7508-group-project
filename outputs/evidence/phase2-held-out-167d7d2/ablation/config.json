@@ -1,0 +1,7 @@
+{
+  "started_utc": "2026-11-22T08:05:04.650880+00:00",
+  "mode": "both",
+  "preset": "full",
+  "velocity_dir": "ablation/velocity",
+  "position_dir": "ablation/position"
+}
