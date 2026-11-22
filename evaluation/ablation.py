@@ -49,6 +49,36 @@ DEFAULT_POS_SIGMAS: dict[str, tuple[float, ...]] = {
     "full": (0.002, 0.005, 0.010),
 }
 
+DEFAULT_VEL_ABLATION_SEEDS: dict[str, tuple[int, int]] = {
+    "smoke": (1050000, ABLATION_BASE),
+    "full": (1400000, 1450000),
+}
+
+DEFAULT_POS_ABLATION_SEEDS: dict[str, tuple[int, int]] = {
+    "smoke": (1060000, 1350000),
+    "full": (1500000, 1550000),
+}
+
+
+def resolve_ablation_seed_bases(
+    mode: str,
+    preset: str,
+    seed_base: int | None = None,
+    cal_base: int | None = None,
+) -> tuple[int, int]:
+    """Return ``(cal_base, seed_base)`` for an ablation sweep mode and preset."""
+    if preset not in ("smoke", "full"):
+        raise ValueError(f"Ablation preset must be 'smoke' or 'full', got {preset!r}")
+    if mode == "velocity":
+        default_cal, default_seed = DEFAULT_VEL_ABLATION_SEEDS[preset]
+    elif mode == "position":
+        default_cal, default_seed = DEFAULT_POS_ABLATION_SEEDS[preset]
+    else:
+        raise ValueError(f"Ablation mode must be 'velocity' or 'position', got {mode!r}")
+    resolved_cal = default_cal if cal_base is None else int(cal_base)
+    resolved_seed = default_seed if seed_base is None else int(seed_base)
+    return resolved_cal, resolved_seed
+
 
 def _resolve_ablation_defaults(
     models: Sequence[Path | str] | None,
@@ -268,10 +298,16 @@ def run_velocity_noise_ablation(
     episodes: int | None = None,
     calibration_episodes: int | None = None,
     vel_sigmas: Sequence[float] | None = None,
-    seed_base: int = ABLATION_BASE,
-    cal_base: int = 1050000,
+    seed_base: int | None = None,
+    cal_base: int | None = None,
 ) -> dict[str, Any]:
     """Sweep velocity sensor noise under sustained bias with fresh calibration per sigma."""
+    resolved_cal_base, resolved_seed_base = resolve_ablation_seed_bases(
+        mode="velocity",
+        preset=preset,
+        seed_base=seed_base,
+        cal_base=cal_base,
+    )
     sigmas = (
         list(vel_sigmas)
         if vel_sigmas is not None
@@ -292,8 +328,8 @@ def run_velocity_noise_ablation(
         preset=preset,
         episodes=episodes,
         calibration_episodes=calibration_episodes,
-        seed_base=seed_base,
-        cal_base=cal_base,
+        seed_base=resolved_seed_base,
+        cal_base=resolved_cal_base,
     )
 
 
@@ -304,10 +340,16 @@ def run_position_noise_ablation(
     episodes: int | None = None,
     calibration_episodes: int | None = None,
     pos_sigmas: Sequence[float] | None = None,
-    seed_base: int = 1350000,
-    cal_base: int = 1060000,
+    seed_base: int | None = None,
+    cal_base: int | None = None,
 ) -> dict[str, Any]:
     """Sweep position sensor noise under late strong bias with fresh calibration per sigma."""
+    resolved_cal_base, resolved_seed_base = resolve_ablation_seed_bases(
+        mode="position",
+        preset=preset,
+        seed_base=seed_base,
+        cal_base=cal_base,
+    )
     sigmas = (
         list(pos_sigmas)
         if pos_sigmas is not None
@@ -328,15 +370,18 @@ def run_position_noise_ablation(
         preset=preset,
         episodes=episodes,
         calibration_episodes=calibration_episodes,
-        seed_base=seed_base,
-        cal_base=cal_base,
+        seed_base=resolved_seed_base,
+        cal_base=resolved_cal_base,
     )
 
 
 __all__ = [
     "ABLATION_DEFENSES",
+    "DEFAULT_POS_ABLATION_SEEDS",
     "DEFAULT_POS_SIGMAS",
+    "DEFAULT_VEL_ABLATION_SEEDS",
     "DEFAULT_VEL_SIGMAS",
+    "resolve_ablation_seed_bases",
     "run_position_noise_ablation",
     "run_velocity_noise_ablation",
 ]

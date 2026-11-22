@@ -40,14 +40,11 @@ The initial smoke states therefore overlap the full ablation defaults. Keep
 these results for pipeline validation. If the full ablation must use independent
 states, agree on fresh seed blocks before running it.
 
-## Final report table
+## Final Report Tables and Reporting Conventions
 
-Fill one row per case and defense from the formal runs. Keep the per-policy
-breakdown and record the revision, preset, and model hashes with the results.
+Completed held-out Phase-2 tables, per-defense totals, and figures are archived in [the held-out results bundle](../outputs/evidence/phase2-held-out-167d7d2/README.md) and documented alongside exact seed blocks and checkpoint hashes in [the evaluation run manifest](EVALUATION_RUN_MANIFEST.md).
 
-| Case | Defense | Task success (n/N) | Aborts (n/N) | In-window detection (%) | Clean false alarms per episode (%) | Clean false alarms per step (%) | Paired window distance change (cm) |
-|---|---|---|---|---|---|---|---|
-| — | — | — | — | — | — | — | — |
+When compiling final slides or paper tables from the CSV summaries (`matrix_summary.csv`, `summary.csv`, `ablation_summary.csv`):
 
 Use the paired clean condition for the distance comparison and identify the
 number of paired initial states. Mark unavailable metrics explicitly. Distinguish
@@ -86,27 +83,25 @@ frozen configuration and output checks.
 - From the integrated revision, rerun the framework and attack regression
   tests and a small trace-enabled matrix using development seeds. Confirm that
   both sinusoidal case IDs appear and that plotting and replay still work.
-- Confirm the expected row counts before opening the held-out block. With the
-  current draft and all eight defense entries, `late_strong` has 21 cases
-  and 15,120 evaluation rows, and `full_matrix` has 31 cases and 22,320 rows with the pulse case.
+- Confirm the expected row counts before running the held-out block. With the
+  frozen `167d7d2` configuration and all eight defense entries, `late_strong` has 21 cases
+  and 15,120 evaluation rows, and `full_matrix` has 31 cases and 22,320 rows including `pulse_e1.0_s60_d40_on18_off2`.
   These counts include clean and use 3 policies × 30 paired states per case
-  and defense. Recalculate from the frozen selections. The presets share
-  cases and seeds, so keep their results separate.
+  and defense. Keep the two matrix runs separate because they share overlapping
+  cases and evaluation seeds (`1200000`).
 - After each run, check the completion flag, verify the planned row count and
   unique (policy, seed, case, defense) keys, and confirm that each condition
   covers the same states within each policy. Keep traces for the selected replay.
-- Agree on the full ablation seed blocks and add angle error and calibrated
-  threshold to the final ablation figures or tables.
+- Use disjoint held-out ablation seed blocks (`1400000`/`1450000` for velocity; `1500000`/`1550000` for position, which are the defaults for `--preset full`) and include applied angle error and calibrated threshold in the ablation figures and tables.
 
-## Candidates from the exploratory attack branch
+## Periodic Pulse Case Note
 
-Commit `12be6a8` on `attack/phase2-exploratory-methods` adds a periodic pulse
-case to the attack registry. The preparation branch includes a separately named
-pulse entry in `full_matrix` and retains the sustained-bias reference. The
-earlier elbow-flip candidate remains outside the proposed case list.
+Commit `12be6a8` added the periodic `pulse` attack to the registry, and it is
+included as `pulse_e1.0_s60_d40_on18_off2` in `full_matrix` alongside the
+matched sustained-bias reference `sustained_bias_e1.0_s60_d40`.
 
 For the pulse comparison, report task success, aborts, and detection separately.
-The current episode-level detection metric counts alarms anywhere in the
-scheduled window, including pulse-off observations. If the report needs
-active-pulse detection, use the nonzero `delta_rad` observations in the pulse trace and label the
-metric separately. The `is_active` flag covers the scheduled pulse window. Recompute the expected matrix counts when the case list is frozen.
+The episode-level detection metric counts alarms anywhere in the
+scheduled `[start, start + duration)` window, including pulse-off observations. If a report requires
+active-pulse detection, filter the pulse trace to nonzero `delta_rad` observations and label the
+metric separately (`is_active` covers the scheduled pulse window).

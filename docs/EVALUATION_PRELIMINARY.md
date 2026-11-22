@@ -1,22 +1,17 @@
-# Preliminary Evaluation results
+# Preliminary Evaluation Results (Nov 21 Development Snapshot)
 
-**Status:** Development evidence and pipeline validation. The final case set,
-defense settings, and held-out results are pending. The official matrix seed
-block beginning at 1200000 remains unused.
+**Status:** Historical pre-freeze development snapshot (`2026-11-21`). The final Phase-2 case list, defense parameters, and held-out evaluation runs (`15,120` + `22,320` matrix episodes and `3,600` noise ablation episodes) have since been frozen and completed in [the held-out results bundle](../outputs/evidence/phase2-held-out-167d7d2/README.md); see [EVALUATION_RUN_MANIFEST.md](EVALUATION_RUN_MANIFEST.md) for the authoritative freeze record.
 
 See the [development evidence bundle](../outputs/evidence/evaluation-development-20261121/README.md)
-for the summary tables, run configs, and figures.
+for the development summary tables, run configs, and figures recorded prior to the held-out runs.
 
-## What is ready
+## What Was Validated Here
 
 - The smoke report, ablation plots, result checker, and full-size layout check
-  are merged into the shared Phase 2 branch through [PR #5](https://github.com/Lyan9145/DASE7508-group-project/pull/5).
+  were merged through [PR #5](https://github.com/Lyan9145/DASE7508-group-project/pull/5).
   The framework smoke covered 96 matrix episodes and 80 ablation episodes.
-- The paired sinusoidal comparison is wired locally and verified on two
-  development states. The exploratory pulse and earlier elbow-flip cases
-  are candidates for the final manifest.
-- The [run manifest](EVALUATION_RUN_MANIFEST.md) will record the integrated revision, cases, defenses,
-  checkpoint hashes, seeds, and expected row counts.
+- The paired sinusoidal comparison and exploratory `pulse` attack candidate
+  (`12be6a8`) were integrated and subsequently frozen in [EVALUATION_RUN_MANIFEST.md](EVALUATION_RUN_MANIFEST.md).
 
 ## Defense verification
 
@@ -75,8 +70,6 @@ heatmap in the [layout check](EVALUATION_LAYOUT.md) is a formatting preview.
 For a progress slide, use the Defense verification table and label it
 **Development verification · 1 policy · 6 paired states**.
 
-## Before producing final figures
+## Progression to Held-Out Runs
 
-Freeze the case list, effective defense settings, and final ablation seed
-blocks. Run the development smoke again if the integrated revision changes.
-Complete the run manifest before starting the official runs.
+Following these development checks, the frozen Phase-2 configuration (`167d7d2`), disjoint ablation seed blocks (`1400000`–`1550000`), and completed held-out results were recorded in [EVALUATION_RUN_MANIFEST.md](EVALUATION_RUN_MANIFEST.md) and [the held-out results bundle](../outputs/evidence/phase2-held-out-167d7d2/README.md).

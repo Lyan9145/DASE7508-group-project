@@ -7,8 +7,11 @@ from pathlib import Path
 import time
 
 from evaluation import (
+    collect_seed_set,
+    resolve_ablation_seed_bases,
     run_position_noise_ablation,
     run_velocity_noise_ablation,
+    validate_disjoint_seeds,
     write_json,
 )
 from evaluation.ablation import _resolve_ablation_defaults
@@ -91,7 +94,7 @@ def main() -> None:
         parser.error("Seed bases must be nonnegative")
 
     try:
-        _resolve_ablation_defaults(
+        model_paths, resolved_episodes, resolved_cal_episodes = _resolve_ablation_defaults(
             models=args.models,
             preset=args.preset,
             episodes=args.episodes,
@@ -116,6 +119,26 @@ def main() -> None:
                 **position_seeds,
             )
         else:
+            vel_cal_base, vel_seed_base = resolve_ablation_seed_bases(
+                mode="velocity",
+                preset=args.preset,
+                seed_base=args.velocity_seed_base,
+                cal_base=args.velocity_cal_base,
+            )
+            pos_cal_base, pos_seed_base = resolve_ablation_seed_bases(
+                mode="position",
+                preset=args.preset,
+                seed_base=args.position_seed_base,
+                cal_base=args.position_cal_base,
+            )
+            n_models = len(model_paths)
+            vel_cal = collect_seed_set(vel_cal_base, resolved_cal_episodes, n_models)
+            vel_eval = collect_seed_set(vel_seed_base, resolved_episodes, n_models)
+            pos_cal = collect_seed_set(pos_cal_base, resolved_cal_episodes, n_models)
+            pos_eval = collect_seed_set(pos_seed_base, resolved_episodes, n_models)
+            validate_disjoint_seeds(vel_cal, vel_eval, pos_cal, pos_eval)
+            validate_disjoint_seeds(pos_cal, pos_eval)
+
             started = time.perf_counter()
             args.out.mkdir(parents=True, exist_ok=False)
             vel_dir = args.out / "velocity"
@@ -126,8 +149,8 @@ def main() -> None:
                     "started_utc": datetime.now(timezone.utc).isoformat(),
                     "mode": "both",
                     "preset": args.preset,
-                    "velocity_dir": str(vel_dir.resolve()),
-                    "position_dir": str(pos_dir.resolve()),
+                    "velocity_dir": "velocity",
+                    "position_dir": "position",
                 },
             )
             vel_res = run_velocity_noise_ablation(

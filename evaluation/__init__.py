@@ -3,8 +3,11 @@ from __future__ import annotations
 
 from .ablation import (
     ABLATION_DEFENSES,
+    DEFAULT_POS_ABLATION_SEEDS,
     DEFAULT_POS_SIGMAS,
+    DEFAULT_VEL_ABLATION_SEEDS,
     DEFAULT_VEL_SIGMAS,
+    resolve_ablation_seed_bases,
     run_position_noise_ablation,
     run_velocity_noise_ablation,
 )
@@ -53,8 +56,10 @@ __all__ = [
     "ALL_DEFENSE_NAMES",
     "AttackCaseSpec",
     "CAL_BASE",
+    "DEFAULT_POS_ABLATION_SEEDS",
     "DEFAULT_POS_SIGMAS",
     "DEFAULT_THREE_MODELS",
+    "DEFAULT_VEL_ABLATION_SEEDS",
     "DEFAULT_VEL_SIGMAS",
     "DEV_BASE",
     "DefenseSpec",
@@ -72,6 +77,7 @@ __all__ = [
     "plot_matrix_heatmap",
     "populate_paired_deltas",
     "recovery_time",
+    "resolve_ablation_seed_bases",
     "resolve_attack_specs",
     "resolve_defense_specs",
     "run_matrix",

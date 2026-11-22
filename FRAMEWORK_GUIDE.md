@@ -34,7 +34,9 @@ The flat root layout places the 7 active CLI entry points alongside top-level pa
 │   ├── legacy.py                         # CleanAttack, BiasAttack, RampAttack, RandomBiasAttack, RandomRampAttack
 │   ├── magnitude_timing.py               # SinusoidalAttack, FreezeAttack, ReplayAttack, PulseAttack
 │   ├── stealthy.py                       # ThresholdAwareRampAttack, ElbowFlipAttack, JointVelocityCoupledAttack
-│   └── adaptive.py                       # PolicyGradientAttack (white-box PGD on SAC actor)
+│   ├── adaptive.py                       # PolicyGradientAttack (white-box PGD on SAC actor)
+│   ├── DEV_RESULTS.md                    # Track 1 development failure-boundary scan and tuning notes
+│   └── EXPLORATORY_RESULTS.md            # Periodic pulse and exploratory attack comparison notes
 ├── defenses/
 │   ├── __init__.py                       # Auto-imports & exposes all 8 registered defenses
 │   ├── base.py                           # CalibrationStats, DefenseContext, DefenseResult, BaseDefense, @register_defense
@@ -49,7 +51,8 @@ The flat root layout places the 7 active CLI entry points alongside top-level pa
 │   ├── presets.py                        # Phase-2 seed block constants, validate_disjoint_seeds, smoke/late_strong/full_matrix
 │   ├── runner.py                         # calibrate_policy, run_paired_trial, run_matrix
 │   ├── ablation.py                       # run_velocity_noise_ablation, run_position_noise_ablation
-│   └── visualize.py                      # plot_matrix_heatmap, plot_detection_tradeoff, plot_ablation_curves, make_comparison_replay
+│   ├── visualize.py                      # plot_matrix_heatmap, plot_detection_tradeoff, plot_ablation_curves, make_comparison_replay
+│   └── check_results.py                  # Completeness, pairing, and outcome-total verifier
 │
 ├── models/
 │   ├── sac_seed_1_sync/model.zip         # Synchronized SAC baseline policy (seed 1)
@@ -58,32 +61,42 @@ The flat root layout places the 7 active CLI entry points alongside top-level pa
 │   └── sac_seed_1_robust/model.zip       # Fallback SAC policy with the joint-0 encoder masked
 ├── tests/
 │   ├── test_framework.py                 # Unified verification suite (kinematics, contracts, parity, CLIs)
+│   ├── test_attack_optimization.py       # Track 1 attack optimization and pulse regression checks
 │   └── test_defense_extensions.py        # Track 2 defense regression checks
 ├── docs/
 │   ├── DASE7508_Proposal_2.0.md          # Phase-1/2 proposal document
 │   ├── PROTOCOL.md                       # Frozen Phase-1 protocol and metric definitions
-│   └── ANALYSIS_NOTES.md                 # Geometric and statistical interpretation notes
+│   ├── ANALYSIS_NOTES.md                 # Geometric and statistical interpretation notes
+│   ├── EVALUATION_RUN_MANIFEST.md        # Frozen Phase-2 held-out run manifest and checkpoint hashes
+│   ├── EVALUATION_PRELIMINARY.md         # Nov 21 development evaluation snapshot
+│   ├── DIRECTION_4A_SMOKE.md             # Direction 4A smoke record and reporting conventions
+│   └── EVALUATION_LAYOUT.md              # Full-size evaluation figure layout verification notes
 ├── env/
 │   └── setup.ps1                         # Windows uv bootstrap script (+ lockfiles and requirements-dev.txt)
 ├── legacy/
 │   └── README.md                         # Index of archived Phase-1 scripts (legacy/scripts/) and reports (legacy/docs/)
-└── outputs/                              # Fresh local run outputs (never overwrite existing directories)
+└── outputs/
+    └── evidence/phase2-held-out-167d7d2/ # Committed Phase-2 held-out results and figures (+ development snapshot)
 ```
 
 Core repository paths tracked in this layout:
-- Root docs & setup: `README.md`, `FRAMEWORK_GUIDE.md`, `requirements.txt`, `docs/PROTOCOL.md`, `docs/ANALYSIS_NOTES.md`, `legacy/README.md`, `tests/test_framework.py`
+- Root docs & setup: `README.md`, `FRAMEWORK_GUIDE.md`, `requirements.txt`, `docs/PROTOCOL.md`, `docs/ANALYSIS_NOTES.md`, `docs/EVALUATION_RUN_MANIFEST.md`, `docs/EVALUATION_PRELIMINARY.md`, `docs/DIRECTION_4A_SMOKE.md`, `docs/EVALUATION_LAYOUT.md`, `legacy/README.md`
+- Tests: `tests/test_framework.py`, `tests/test_attack_optimization.py`, `tests/test_defense_extensions.py`
 - Root CLIs: `check_setup.py`, `train.py`, `train_fallback.py`, `demo.py`, `run_matrix.py`, `run_ablation.py`, `plot_matrix.py`
 - Core package: `core/__init__.py`, `core/kinematics.py`, `core/env_wrapper.py`, `core/reacher_env.py`, `core/security.py`, `core/recovery_monitor.py`
-- Attacks package: `attacks/__init__.py`, `attacks/base.py`, `attacks/legacy.py`, `attacks/magnitude_timing.py`, `attacks/stealthy.py`, `attacks/adaptive.py`
-- Defenses package: `defenses/__init__.py`, `defenses/base.py`, `defenses/legacy.py`, `defenses/statistical.py`, `defenses/fusion_recovery.py`, `defenses/policy_level.py`
-- Evaluation package: `evaluation/__init__.py`, `evaluation/metrics.py`, `evaluation/presets.py`, `evaluation/runner.py`, `evaluation/ablation.py`, `evaluation/visualize.py`
-- Synchronized policies: `models/sac_seed_1_sync/model.zip`, `models/sac_seed_2_sync/model.zip`, `models/sac_seed_3_sync/model.zip`
+- Attacks package: `attacks/__init__.py`, `attacks/base.py`, `attacks/legacy.py`, `attacks/magnitude_timing.py`, `attacks/stealthy.py`, `attacks/adaptive.py`, `attacks/DEV_RESULTS.md`, `attacks/EXPLORATORY_RESULTS.md`
+- Defenses package: `defenses/__init__.py`, `defenses/base.py`, `defenses/legacy.py`, `defenses/statistical.py`, `defenses/fusion_recovery.py`, `defenses/policy_level.py`, `defenses/DEV_RESULTS.md`
+- Evaluation package: `evaluation/__init__.py`, `evaluation/metrics.py`, `evaluation/presets.py`, `evaluation/runner.py`, `evaluation/ablation.py`, `evaluation/visualize.py`, `evaluation/check_results.py`
+- Synchronized & fallback policies: `models/sac_seed_1_sync/model.zip`, `models/sac_seed_2_sync/model.zip`, `models/sac_seed_3_sync/model.zip`, `models/sac_seed_1_robust/model.zip`
+- Held-out evidence index: `outputs/evidence/phase2-held-out-167d7d2/README.md`
 
 Isolation rules:
 1. Do not modify frozen Phase-1 synchronized models (`models/sac_seed_1_sync/model.zip`, `models/sac_seed_2_sync/model.zip`, `models/sac_seed_3_sync/model.zip`) or archived scripts/reports documented in `legacy/README.md`.
-2. `run_matrix.py`, `run_ablation.py`, `train.py`, and `check_setup.py` refuse to overwrite an existing `--out` directory.
+2. `run_matrix.py`, `run_ablation.py`, `train.py`, `train_fallback.py`, and `check_setup.py` refuse to overwrite an existing `--out` directory.
 3. Phase-2 experiments use disjoint seed blocks verified by `validate_disjoint_seeds` before execution:
-   - Phase-2 defaults: `CAL_BASE=1000000`, `DEV_BASE=1100000`, `TEST_BASE=1200000`, `ABLATION_BASE=1300000` (velocity ablation uses cal `1050000` / test `1300000`; position ablation uses cal `1060000` / test `1350000`).
+   - Matrix defaults: `CAL_BASE=1000000`, `DEV_BASE=1100000`, `TEST_BASE=1200000`, `ABLATION_BASE=1300000`.
+   - Smoke ablation defaults (`--preset smoke`): velocity cal `1050000` / test `1300000`; position cal `1060000` / test `1350000`.
+   - Full ablation defaults (`--preset full`): velocity cal `1400000` / test `1450000`; position cal `1500000` / test `1550000`.
    - Protected historical blocks: `10000..13999`, `200000..202999`, `300000..302999`, `500000..502999`, `800000..802999`, `900000..932999`.
 
 ---
@@ -168,13 +181,15 @@ Trust-boundary rules:
 1. **Track 1 — Attack Extensions** (`attacks/magnitude_timing.py`, `attacks/stealthy.py`, `attacks/adaptive.py`):
    - Tune or expand timing, amplitude, multi-channel (`elbow_flip`, `joint_vel_coupled`, `threshold_aware`), and adaptive (`policy_gradient`) attacks.
    - Sweep parameters under `no_defense` on `DEV_BASE=1100000` and document exact failure conditions across `models/sac_seed_1_sync/model.zip`, `models/sac_seed_2_sync/model.zip`, and `models/sac_seed_3_sync/model.zip`.
+   - Status: tuned noisy-tip bisection in `ThresholdAwareRampAttack`, multi-start PGD + optional residual penalty in `PolicyGradientAttack`, 0.25 Hz / pi/2 `SinusoidalAttack` defaults, and `PulseAttack` are implemented and documented in `attacks/DEV_RESULTS.md` and `attacks/EXPLORATORY_RESULTS.md`.
 2. **Track 2 — Defense Extensions** (`defenses/statistical.py`, `defenses/fusion_recovery.py`, `defenses/policy_level.py`):
    - Tune `CusumDefense` and `SlidingWindowDefense` on `DEV_BASE=1100000` to reduce missed detections on small/ramping attacks while controlling clean false alarms.
    - Extend `IKVelocityFusionDefense` (e.g., velocity-channel gating under `joint_vel_coupled`) and train a robust/angle-masked backup SAC policy for `FallbackPolicyDefense` via `--fallback-model`.
-   - Status: tuned defaults, the velocity-consistency gate, the corrected-estimate divergence abort, and the masked fallback policy (`train_fallback.py` -> `models/sac_seed_1_robust/`) are documented with development-set evidence in `defenses/DEV_RESULTS.md`.
-3. **Track 3 — Direction 4A Matrix Evaluation, Ablation & Visualization** (`run_matrix.py`, `run_ablation.py`, `plot_matrix.py`, `evaluation/ablation.py`, `evaluation/visualize.py`):
+   - Status: tuned defaults, the velocity-consistency gate, the corrected-estimate divergence abort, and the masked fallback policy (`train_fallback.py` -> `models/sac_seed_1_robust/model.zip`) are documented with development-set evidence in `defenses/DEV_RESULTS.md`.
+3. **Track 3 — Direction 4A Matrix Evaluation, Ablation & Visualization** (`run_matrix.py`, `run_ablation.py`, `plot_matrix.py`, `evaluation/ablation.py`, `evaluation/visualize.py`, `evaluation/check_results.py`):
    - Run full 3-policy `late_strong` and `full_matrix` evaluations on `TEST_BASE=1200000` (`30` paired states/policy, `100` calibration episodes/policy).
    - Run full velocity (`[0.0, 0.05, 0.2, 0.5, 1.0]`) and position (`[0.002, 0.005, 0.010]`) noise ablations and generate heatmaps, detection tradeoff plots, ablation curves, and 3-panel comparison replays.
+   - Status: completed `late_strong` (15,120 episodes), `full_matrix` (22,320 episodes), and Direction 4A velocity/position ablations (3,600 episodes) are recorded in `docs/EVALUATION_RUN_MANIFEST.md` and `outputs/evidence/phase2-held-out-167d7d2/README.md`.
 
 ---
 
@@ -184,15 +199,17 @@ Run all commands directly from the repository root using your activated Python e
 
 ```bash
 # 1. Verify environment and unified test suite (all tests must pass)
-python -m pytest -q tests/test_framework.py
+python -m pytest -q tests
 python check_setup.py --no-render --out outputs/check_setup_001
 
-# 2. Smoke matrix (1 policy x 4 attacks x 6 defenses x 4 episodes) and plots
+# 2. Smoke matrix (1 policy x 4 attacks x 6 defenses x 4 episodes), integrity check, and plots
 python run_matrix.py --preset smoke --out outputs/phase2_matrix_smoke_001
+python evaluation/check_results.py outputs/phase2_matrix_smoke_001
 python plot_matrix.py outputs/phase2_matrix_smoke_001
 
-# 3. Direction 4A smoke ablation (velocity + position noise) and curves
+# 3. Direction 4A smoke ablation (velocity + position noise), integrity check, and curves
 python run_ablation.py --mode both --preset smoke --out outputs/phase2_ablation_smoke_001
+python evaluation/check_results.py outputs/phase2_ablation_smoke_001
 python plot_matrix.py outputs/phase2_ablation_smoke_001
 
 # 4. Interactive demo with any registered attack and defense
@@ -213,17 +230,23 @@ python run_matrix.py \
 # 6. Train a masked-observation fallback policy (joint-0 encoder hidden inside the network)
 python train_fallback.py --seed 1 --steps 150000 --out outputs/fallback_seed_1_001
 
-# 7. Full 3-policy matrices and Direction 4A full ablations
+# 7. Full 3-policy matrices and Direction 4A full ablations (with result verification)
 python run_matrix.py --preset late_strong \
   --fallback-model models/sac_seed_1_robust/model.zip \
   --out outputs/phase2_late_strong_001
+python evaluation/check_results.py outputs/phase2_late_strong_001
 python plot_matrix.py outputs/phase2_late_strong_001
 
 python run_matrix.py --preset full_matrix \
   --fallback-model models/sac_seed_1_robust/model.zip \
   --out outputs/phase2_full_matrix_001
+python evaluation/check_results.py outputs/phase2_full_matrix_001
 python plot_matrix.py outputs/phase2_full_matrix_001
 
-python run_ablation.py --mode both --preset full --out outputs/phase2_ablation_full_001
+python run_ablation.py --mode both --preset full \
+  --velocity-cal-base 1400000 --velocity-seed-base 1450000 \
+  --position-cal-base 1500000 --position-seed-base 1550000 \
+  --out outputs/phase2_ablation_full_001
+python evaluation/check_results.py outputs/phase2_ablation_full_001
 python plot_matrix.py outputs/phase2_ablation_full_001
 ```

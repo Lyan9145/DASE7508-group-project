@@ -59,6 +59,7 @@ from evaluation import (  # noqa: E402
     get_preset,
     list_presets,
     recovery_time,
+    resolve_ablation_seed_bases,
     run_matrix,
     run_velocity_noise_ablation,
     validate_disjoint_seeds,
@@ -1162,7 +1163,58 @@ def test_end_to_end_cli_smoke_matrix_and_ablation(tmp_path: Path) -> None:
     assert float(vel_high["ik_velocity_fusion"]["mean_applied_angle_mae_rad"]) < float(
         vel_high["continuous_velocity"]["mean_applied_angle_mae_rad"]
     )
+    ab_cfg = json.loads((ablation_dir / "config.json").read_text(encoding="utf-8"))
+    assert ab_cfg["velocity_dir"] == "velocity"
+    assert ab_cfg["position_dir"] == "position"
     assert recovery_time([0.1] * 31, None) is None
+
+
+def test_ablation_cli_validates_cross_mode_seeds_and_portable_config(tmp_path: Path) -> None:
+    assert resolve_ablation_seed_bases("velocity", "smoke") == (1050000, ABLATION_BASE)
+    assert resolve_ablation_seed_bases("position", "smoke") == (1060000, 1350000)
+    vel_full_cal, vel_full_eval = resolve_ablation_seed_bases("velocity", "full")
+    pos_full_cal, pos_full_eval = resolve_ablation_seed_bases("position", "full")
+    assert (vel_full_cal, vel_full_eval) == (1400000, 1450000)
+    assert (pos_full_cal, pos_full_eval) == (1500000, 1550000)
+
+    validate_disjoint_seeds(
+        collect_seed_set(vel_full_cal, 100, 3),
+        collect_seed_set(vel_full_eval, 30, 3),
+        collect_seed_set(pos_full_cal, 100, 3),
+        collect_seed_set(pos_full_eval, 30, 3),
+        collect_seed_set(CAL_BASE, 100, 3),
+        collect_seed_set(TEST_BASE, 30, 3),
+    )
+    validate_disjoint_seeds(
+        collect_seed_set(pos_full_cal, 100, 3),
+        collect_seed_set(pos_full_eval, 30, 3),
+        collect_seed_set(CAL_BASE, 100, 3),
+        collect_seed_set(TEST_BASE, 30, 3),
+    )
+
+    overlap_out = tmp_path / "overlapping_ablation"
+    proc = subprocess.run(
+        [
+            sys.executable,
+            str(ROOT / "run_ablation.py"),
+            "--mode",
+            "both",
+            "--preset",
+            "smoke",
+            "--velocity-seed-base",
+            "1450000",
+            "--position-seed-base",
+            "1450000",
+            "--out",
+            str(overlap_out),
+        ],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+    )
+    assert proc.returncode != 0
+    assert "overlap" in proc.stderr.lower()
+    assert not overlap_out.exists()
 
 
 def test_core_position_noise_stream_and_synchronized_invariance() -> None:
