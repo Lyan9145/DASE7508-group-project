@@ -1,5 +1,0 @@
-dataset,defense,successes,episodes,aborts
-historical,False,2250,2250,0
-historical,True,2248,2250,2
-local,False,2250,2250,0
-local,True,2248,2250,2

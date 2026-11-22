@@ -1,0 +1,15 @@
+{
+  "complete": true,
+  "mode": "velocity",
+  "noise_type": "vel_sigma",
+  "sigmas": [
+    0.0,
+    0.05,
+    0.2,
+    0.5,
+    1.0
+  ],
+  "evaluation_episodes": 2250,
+  "calibration_episodes": 1500,
+  "elapsed_seconds": 51.81699783302611
+}

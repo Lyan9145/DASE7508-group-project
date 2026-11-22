@@ -1,0 +1,8 @@
+{
+  "complete": true,
+  "mode": "both",
+  "preset": "full",
+  "evaluation_episodes": 3600,
+  "calibration_episodes": 2400,
+  "elapsed_seconds": 85.52484049997292
+}
