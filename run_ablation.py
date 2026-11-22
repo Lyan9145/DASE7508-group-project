@@ -47,6 +47,17 @@ def build_parser() -> argparse.ArgumentParser:
         default=None,
         help="Clean calibration episodes per policy per sigma (defaults to preset)",
     )
+    for mode in ("velocity", "position"):
+        parser.add_argument(
+            f"--{mode}-seed-base",
+            type=int,
+            help=f"Evaluation seed base for the {mode} sweep",
+        )
+        parser.add_argument(
+            f"--{mode}-cal-base",
+            type=int,
+            help=f"Calibration seed base for the {mode} sweep",
+        )
     parser.add_argument(
         "--out",
         type=Path,
@@ -62,6 +73,23 @@ def main() -> None:
     if args.out.exists():
         parser.error(f"Output directory exists; use a new directory: {args.out}")
 
+    velocity_seeds = {
+        key: value for key, value in (
+            ("seed_base", args.velocity_seed_base), ("cal_base", args.velocity_cal_base)
+        ) if value is not None
+    }
+    position_seeds = {
+        key: value for key, value in (
+            ("seed_base", args.position_seed_base), ("cal_base", args.position_cal_base)
+        ) if value is not None
+    }
+    if args.mode == "velocity" and position_seeds:
+        parser.error("Position seed options require --mode position or both")
+    if args.mode == "position" and velocity_seeds:
+        parser.error("Velocity seed options require --mode velocity or both")
+    if any(seed < 0 for seed in (*velocity_seeds.values(), *position_seeds.values())):
+        parser.error("Seed bases must be nonnegative")
+
     try:
         _resolve_ablation_defaults(
             models=args.models,
@@ -76,6 +104,7 @@ def main() -> None:
                 preset=args.preset,
                 episodes=args.episodes,
                 calibration_episodes=args.calibration_episodes,
+                **velocity_seeds,
             )
         elif args.mode == "position":
             run_position_noise_ablation(
@@ -84,6 +113,7 @@ def main() -> None:
                 preset=args.preset,
                 episodes=args.episodes,
                 calibration_episodes=args.calibration_episodes,
+                **position_seeds,
             )
         else:
             started = time.perf_counter()
@@ -106,6 +136,7 @@ def main() -> None:
                 preset=args.preset,
                 episodes=args.episodes,
                 calibration_episodes=args.calibration_episodes,
+                **velocity_seeds,
             )
             pos_res = run_position_noise_ablation(
                 models=args.models,
@@ -113,6 +144,7 @@ def main() -> None:
                 preset=args.preset,
                 episodes=args.episodes,
                 calibration_episodes=args.calibration_episodes,
+                **position_seeds,
             )
             write_json(
                 args.out / "run_status.json",
