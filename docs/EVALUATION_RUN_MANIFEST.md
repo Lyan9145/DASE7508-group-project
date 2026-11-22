@@ -8,8 +8,8 @@ execution.
 
 | Item | Value |
 |---|---|
-| Integrated Git commit and package lock | Pending |
-| Attack cases and effective settings | Pending. Record distinct case IDs for the original and tuned sinusoidal cases if both are retained. Decide separately whether to include the exploratory pulse and elbow-flip candidates. |
+| Integrated Git commit and package lock | Preparation branch tested locally. Record the final shared commit and package lock before execution. |
+| Attack cases and effective settings | Preparation includes both sinusoidal IDs and the existing pulse configuration from Attack commit `12be6a8` in `full_matrix`. The earlier elbow-flip candidate remains outside the proposed case list. |
 | Defense settings | Pending. Record effective parameters, including any values supplied by class defaults. |
 | Three baseline checkpoint paths and SHA-256 hashes | Pending |
 | Backup checkpoint path and SHA-256 hash | Candidate verified on the merged Defense code. See the hash below. |
@@ -39,18 +39,30 @@ Record override steps and episodes separately from steps labeled
 | Run | Calibration seed base / episodes per policy | Evaluation seed base / states per policy | Expected rows | Output directory |
 |---|---|---|---|---|
 | Integrated smoke | Development calibration / pending | Development block / pending | Pending | Pending |
-| `late_strong` | Pending / 100 | `1200000` / 30 | Pending | Pending |
-| `full_matrix` | Pending / 100 | `1200000` / 30 | Pending | Pending |
-| Velocity ablation | Pending / 100 per noise level | Pending / 30 per noise level | Pending | Pending |
-| Position ablation | Pending / 100 per noise level | Pending / 30 per noise level | Pending | Pending |
+| `late_strong` | `1000000` / 100 | `1200000` / 30 | 15,120 | Pending |
+| `full_matrix` | `1000000` / 100 | `1200000` / 30 | 22,320 | Pending |
+| Velocity ablation | `1400000` / 100 per noise level | `1450000` / 30 per noise level | 2,250 | `velocity/` within the combined ablation run |
+| Position ablation | `1500000` / 100 per noise level | `1550000` / 30 per noise level | 1,350 | `position/` within the combined ablation run |
 
 Matrix rows equal policies × states × cases × defenses, including the clean
 case. With the current draft and all eight defenses, the counts are 15,120
-for `late_strong` and 21,600 for `full_matrix`. Recalculate from the frozen
-case and defense lists. Keep the two matrix runs separate because they share conditions and
-seeds. Check the ablation seed blocks against the smoke runs before calling
-them independent. Decide which runs retain traces and preserve at least the
+for `late_strong` and 22,320 for `full_matrix` with its 31 cases, including
+`pulse_e1.0_s60_d40_on18_off2`. Recalculate if the case or defense lists change.
+Keep the two matrix runs separate because they share conditions and seeds.
+The four proposed ablation blocks are disjoint across all three policies
+(with a stride of 1,000), the known smoke runs, the five-level development
+sweep, and the official matrix block. Each sweep reuses its paired states
+across noise levels. Decide which runs retain traces and preserve at least the
 matrix traces needed for the replay and fallback-override counts.
+
+## Ablation command after the freeze
+
+```bash
+python run_ablation.py --mode both --preset full \
+  --velocity-cal-base 1400000 --velocity-seed-base 1450000 \
+  --position-cal-base 1500000 --position-seed-base 1550000 \
+  --out outputs/phase2_ablation_final_001
+```
 
 ## Acceptance checks
 

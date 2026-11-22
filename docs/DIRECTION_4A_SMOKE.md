@@ -88,7 +88,7 @@ frozen configuration and output checks.
   both sinusoidal case IDs appear and that plotting and replay still work.
 - Confirm the expected row counts before opening the held-out block. With the
   current draft and all eight defense entries, `late_strong` has 21 cases
-  and 15,120 evaluation rows, and `full_matrix` has 30 cases and 21,600 rows.
+  and 15,120 evaluation rows, and `full_matrix` has 31 cases and 22,320 rows with the pulse case.
   These counts include clean and use 3 policies × 30 paired states per case
   and defense. Recalculate from the frozen selections. The presets share
   cases and seeds, so keep their results separate.
@@ -101,14 +101,12 @@ frozen configuration and output checks.
 ## Candidates from the exploratory attack branch
 
 Commit `12be6a8` on `attack/phase2-exploratory-methods` adds a periodic pulse
-case to the attack registry but does not add it to the matrix presets. Review
-the pulse and the earlier elbow-flip case as candidates before freezing the
-matrix. Recheck both on development seeds in the pinned environment after the
-attack changes are integrated. Keep the existing matched sustained-bias and
-elbow-flip rows as references.
+case to the attack registry. The preparation branch includes a separately named
+pulse entry in `full_matrix` and retains the sustained-bias reference. The
+earlier elbow-flip candidate remains outside the proposed case list.
 
 For the pulse comparison, report task success, aborts, and detection separately.
 The current episode-level detection metric counts alarms anywhere in the
 scheduled window, including pulse-off observations. If the report needs
-active-pulse detection, use the trace `is_active` flag and label the metric
-separately. Recompute the expected matrix counts when the case list is frozen.
+active-pulse detection, use the nonzero `delta_rad` observations in the pulse trace and label the
+metric separately. The `is_active` flag covers the scheduled pulse window. Recompute the expected matrix counts when the case list is frozen.
